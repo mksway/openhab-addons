@@ -14,7 +14,6 @@ package org.openhab.binding.lgessenervu.internal.client;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.lgessenervu.internal.LGEssEnervuBindingConstants.FailReason;
-import org.openhab.binding.lgessenervu.internal.client.gson.cloud.OverviewData;
 
 /**
  * The {@link ResponseCallback} interface is responsible for handling commands, which are
@@ -25,11 +24,11 @@ import org.openhab.binding.lgessenervu.internal.client.gson.cloud.OverviewData;
 @NonNullByDefault
 public interface IResponseCallback {
 
-    // void responseCallbackError(String msg);
+    void responseCallbackError(FailReason reason);
 
     void responseCallbackLoggedIn(boolean isloggedin, FailReason reason);
 
-    void responseCallbackDaily(OverviewData overviewdata);
+    void responseCallbackDaily(ResponseData responseData);
 
-    void responseCallbackCurrentData(ResponseData common);
+    void responseCallbackCurrentData(ResponseData responseData);
 }

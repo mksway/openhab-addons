@@ -30,6 +30,12 @@ public class LGEssenervuConfiguration {
      * Refresh interval data is pulled
      */
     public int refreshInterval = 60;
+
+    /**
+     * Refresh interval data is pulled
+     */
+    public int refreshIntervalCloud = 60;
+
     /**
      * Timeout when a connection timeout is considered
      */
@@ -57,6 +63,5 @@ public class LGEssenervuConfiguration {
      */
     public Double co2Factor = 0.0;
     public Double kwhPrice = 0.0;
-    public Double kwhPricesell = 0.0;
-
+    public Double kwhPriceSell = 0.0;
 }

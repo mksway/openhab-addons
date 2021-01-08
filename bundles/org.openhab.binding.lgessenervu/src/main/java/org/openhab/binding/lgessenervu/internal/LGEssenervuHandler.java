@@ -30,12 +30,13 @@ import org.openhab.binding.lgessenervu.internal.client.LGCloudClient;
 import org.openhab.binding.lgessenervu.internal.client.LGEssClient;
 import org.openhab.binding.lgessenervu.internal.client.LGLanClient;
 import org.openhab.binding.lgessenervu.internal.client.ResponseData;
-import org.openhab.binding.lgessenervu.internal.client.gson.cloud.OverviewData;
+import org.openhab.binding.lgessenervu.internal.job.FifteenMinJob;
 import org.openhab.binding.lgessenervu.internal.job.SnapshotJob;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.QuantityType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.unit.SIUnits;
 import org.openhab.core.library.unit.Units;
 import org.openhab.core.scheduler.CronScheduler;
 import org.openhab.core.scheduler.ScheduledCompletableFuture;
@@ -46,6 +47,7 @@ import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingStatusDetail;
 import org.openhab.core.thing.binding.BaseThingHandler;
 import org.openhab.core.types.Command;
+import org.openhab.core.types.RefreshType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,10 +69,13 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
     private @Nullable ScheduledCompletableFuture<?> fifteenminJob;
     private final Lock monitor = new ReentrantLock();
     private final Set<ScheduledFuture<?>> scheduledFutures = new HashSet<>();
-    // private String CRON_15MIN = "0 0/15 * ? * * *";
+    private final String CRON_15MIN = "0 0/1 * ? * * *";
 
     private LGEssClient lgessClient;
     private int refreshInterval;
+    private double co2factor;
+    private double eurprokwh;
+    private double eurprokwhs;
 
     public LGEssenervuHandler(Thing thing, @Nullable HttpClient client, @Nullable CronScheduler cronScheduler) {
         super(thing);
@@ -82,6 +87,19 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
+
+        if (command instanceof RefreshType) {
+            logger.warn("refresh called!");
+            scheduler.execute(() -> {
+                if (lgessClient.getLoginStatus()) {
+                    lgessClient.getCurrentData();
+                    if (true == config.dataSourceCloud) {
+                        lgessClient.get15MinOverview();
+                    }
+                }
+            });
+        }
+
     }
 
     @Override
@@ -106,6 +124,7 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
             lgessClient = new LGCloudClient(httpclient);
             lgessClient.setUserID(config.user);
             lgessClient.setPassword(config.passwordCloud);
+            refreshInterval = config.refreshIntervalCloud;
 
         } else {
 
@@ -123,21 +142,27 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
             lgessClient = new LGLanClient(httpclient);
             lgessClient.setPassword(config.passwordLocal);
             lgessClient.setHostname(config.hostName);
+            refreshInterval = config.refreshInterval;
         }
 
-        refreshInterval = config.refreshInterval;
+        co2factor = config.co2Factor;
+        eurprokwh = config.kwhPrice;
+        eurprokwhs = config.kwhPriceSell;
 
         lgessClient.setTimeout(config.timeout);
         lgessClient.registerCallback(this);
 
         scheduler.execute(() -> {
             if (false == lgessClient.getLoginStatus()) {
-                lgessClient.Login();
+                try {
+                    lgessClient.Login();
+                } catch (Exception e) {
+                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "Wrong credentials");
+                }
             }
         });
 
         logger.info("LGEssEnervu Thing initialized");
-
     }
 
     @Override
@@ -165,14 +190,16 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
             ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(sjob, 0, refreshInterval, TimeUnit.SECONDS);
             scheduledFutures.add(future);
             logger.warn("Scheduled {} every {} seconds", "status job", refreshInterval);
-            /*
-             * FifteenMinJob runnable = new FifteenMinJob(lgcloudclient);
-             * fifteenminJob = cronscheduler.schedule(runnable, CRON_15MIN);
-             * runnable.run();
-             * logger.debug("Scheduled {} every 15min", fifteenminJob);
-             */
+
+            FifteenMinJob runnable = new FifteenMinJob(lgessClient);
+            if (null != cronscheduler) {
+                fifteenminJob = cronscheduler.schedule(runnable, CRON_15MIN);
+                runnable.run();
+            }
+            logger.debug("Scheduled {} every 15min", fifteenminJob);
+
         } catch (Exception ex) {
-            logger.error("{}\n{}", ex.getMessage(), ex);
+            logger.error("{}", ex.getMessage(), ex);
         } finally {
             monitor.unlock();
         }
@@ -227,8 +254,8 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
 
             scheduler.schedule(() -> {
                 if (false == lgessClient.getLoginStatus()) {
-
                     lgessClient.Login();
+
                 }
             }, 60, TimeUnit.SECONDS);
 
@@ -293,7 +320,6 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
             stopPolling();
             return;
         }
-
         logger.warn("handler callback called! with {}", responseData);
 
         // grid
@@ -301,6 +327,7 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
         Channel chan_current_pwr_to_grid = getThing().getChannel(CHANNEL_CURRENT_POWER_TO_GRID);
         // pv
         Channel chan_current_pwr_from_pv = getThing().getChannel(CHANNEL_CURRENT_POWER_FROM_PV);
+
         // battery
         Channel chan_current_battery_soc = getThing().getChannel(CHANNEL_BATTERY_SOC);
         Channel chan_current_battery_status = getThing().getChannel(CHANNEL_BATTERY_STATUS);
@@ -311,6 +338,7 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
 
         // load
         Channel chan_current_total_power_consumption = getThing().getChannel(CHANNEL_CURRENT_TOTAL_POWER_CONSUMPTION);
+
         Channel chan_current_direct_power_consumption = getThing().getChannel(CHANNEL_CURRENT_DIRECT_POWER_CONSUMPTION);
 
         // status
@@ -360,11 +388,15 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
 
         if (chan_current_direct_power_consumption != null) {
             double directpow = 0;
-            logger.warn("load power -> {}", responseData.getCommon().getLOAD().getLoadPower());
-            directpow = Double.parseDouble(responseData.getCommon().getLOAD().getLoadPower())
-                    - Double.parseDouble(responseData.getCommon().getGRID().getActivePower());
-            if (directpow < 0) {
-                directpow = 0;
+            try {
+                directpow = Double.parseDouble(responseData.getCommon().getLOAD().getLoadPower())
+                        - Double.parseDouble(responseData.getCommon().getGRID().getActivePower());
+
+                if (directpow < 0) {
+                    directpow = 0;
+                }
+            } catch (Exception e) {
+
             }
             publishChannelIfLinked(chan_current_direct_power_consumption.getUID(),
                     new QuantityType<>(directpow, Units.WATT_HOUR));
@@ -426,7 +458,197 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
     }
 
     @Override
-    public void responseCallbackDaily(OverviewData overviewdata) {
-        // TODO Auto-generated method stub
+    public void responseCallbackDaily(ResponseData responseData) {
+        if (this.getThing().getStatus() != ThingStatus.ONLINE) {
+            stopPolling();
+            return;
+        }
+
+        logger.warn("handler callback called! with {}", responseData);
+
+        Channel chan_daily_consumption_from_grid = getThing().getChannel(CHANNEL_DAILY_POWER_FROM_GRID);
+        Channel chan_monthly_consumption_from_grid = getThing().getChannel(CHANNEL_MONTHLY_POWER_FROM_GRID);
+
+        Channel chan_daily_production_from_pv = getThing().getChannel(CHANNEL_DAILY_POWER_FROM_PV);
+        Channel chan_monthly_production_from_pv = getThing().getChannel(CHANNEL_MONTHLY_POWER_FROM_PV);
+
+        Channel chan_daily_soldpower_to_grid = getThing().getChannel(CHANNEL_DAILY_POWER_TO_GRID);
+        Channel chan_monthly_soldpower_to_grid = getThing().getChannel(CHANNEL_MONTHLY_POWER_TO_GRID);
+
+        Channel chan_daily_battery_power_charge = getThing().getChannel(CHANNEL_DAILY_POWER_TO_BATTERY);
+        Channel chan_monthly_battery_power_charge = getThing().getChannel(CHANNEL_MONTHLY_POWER_TO_BATTERY);
+
+        Channel chan_daily_battery_power_discharge = getThing().getChannel(CHANNEL_DAILY_POWER_FROM_BATTERY);
+        Channel chan_monthly_battery_power_discharge = getThing().getChannel(CHANNEL_MONTHLY_POWER_FROM_BATTERY);
+
+        Channel chan_daily_total_power_consumption = getThing().getChannel(CHANNEL_DAILY_TOTAL_POWER_CONSUMPTION);
+        Channel chan_monthly_total_power_consumption = getThing().getChannel(CHANNEL_MONTHLY_TOTAL_POWER_CONSUMPTION);
+
+        Channel chan_daily_direct_power_consumption = getThing()
+                .getChannel(CHANNEL_DAILY_DIRECT_POWER_CONSUMPTION_FROM_PV);
+
+        Channel chan_monthly_direct_power_consumption = getThing()
+                .getChannel(CHANNEL_MONTHLY_DIRECT_POWER_CONSUMPTION_FROM_PV);
+
+        Channel chan_month_co2_savings = getThing().getChannel(CHANNEL_MONTHLY_CO2SAVINGS);
+        Channel chan_month_paid = getThing().getChannel(CHANNEL_MONTHLY_PAID);
+        Channel chan_month_earnings = getThing().getChannel(CHANNEL_MONTHLY_EARNINGS);
+        Channel chan_month_savings = getThing().getChannel(CHANNEL_MONTHLY_SAVINGS);
+
+        if (chan_daily_consumption_from_grid != null) {
+
+            publishChannelIfLinked(chan_daily_consumption_from_grid.getUID(),
+                    new QuantityType<>(
+                            getNumericValueOfString(
+                                    responseData.getCommon().getGRID().getTodayGridPowerPurchaseEnergy()),
+                            Units.WATT_HOUR));
+        }
+        if (chan_monthly_consumption_from_grid != null) {
+            publishChannelIfLinked(chan_monthly_consumption_from_grid.getUID(),
+                    new QuantityType<>(
+                            getNumericValueOfString(
+                                    responseData.getCommon().getGRID().getMonthGridPowerPurchaseEnergy()),
+                            Units.WATT_HOUR));
+        }
+
+        if (chan_daily_production_from_pv != null) {
+            publishChannelIfLinked(chan_daily_production_from_pv.getUID(),
+                    new QuantityType<>(
+                            getNumericValueOfString(responseData.getCommon().getPV().getTodayPvGenerationSum()),
+                            Units.WATT_HOUR));
+        }
+
+        if (chan_daily_soldpower_to_grid != null) {
+            publishChannelIfLinked(chan_daily_soldpower_to_grid.getUID(),
+                    new QuantityType<>(
+                            getNumericValueOfString(responseData.getCommon().getGRID().getTodayGridFeedInEnergy()),
+                            Units.WATT_HOUR));
+        }
+
+        if (chan_monthly_production_from_pv != null) {
+            publishChannelIfLinked(chan_monthly_production_from_pv.getUID(),
+                    new QuantityType<>(
+                            getNumericValueOfString(responseData.getCommon().getPV().getTodayMonthPvGenerationSum()),
+                            Units.WATT_HOUR));
+        }
+
+        if (chan_monthly_soldpower_to_grid != null) {
+            publishChannelIfLinked(chan_monthly_soldpower_to_grid.getUID(),
+                    new QuantityType<>(
+                            getNumericValueOfString(responseData.getCommon().getGRID().getMonthGridFeedInEnergy()),
+                            Units.WATT_HOUR));
+        }
+
+        if (chan_daily_battery_power_charge != null) {
+            publishChannelIfLinked(chan_daily_battery_power_charge.getUID(),
+                    new QuantityType<>(
+                            getNumericValueOfString(responseData.getCommon().getBATT().getTodayBattChargeEnergy()),
+                            Units.WATT_HOUR));
+        }
+
+        if (chan_monthly_battery_power_charge != null) {
+            publishChannelIfLinked(chan_monthly_battery_power_charge.getUID(),
+                    new QuantityType<>(
+                            getNumericValueOfString(responseData.getCommon().getBATT().getMonthBattChargeEnergy()),
+                            Units.WATT_HOUR));
+        }
+
+        if (chan_daily_battery_power_discharge != null) {
+            publishChannelIfLinked(chan_daily_battery_power_discharge.getUID(),
+                    new QuantityType<>(
+                            getNumericValueOfString(responseData.getCommon().getBATT().getTodayBattDischargeEnery()),
+                            Units.WATT_HOUR));
+        }
+        if (chan_monthly_battery_power_discharge != null) {
+
+            publishChannelIfLinked(chan_monthly_battery_power_discharge.getUID(),
+                    new QuantityType<>(
+                            getNumericValueOfString(responseData.getCommon().getBATT().getMonthBattDischargeEnergy()),
+                            Units.WATT_HOUR));
+        }
+
+        if (chan_daily_total_power_consumption != null) {
+            publishChannelIfLinked(chan_daily_total_power_consumption.getUID(),
+                    new QuantityType<>(
+                            getNumericValueOfString(responseData.getCommon().getLOAD().getTodayLoadConsumptionSum()),
+                            Units.WATT_HOUR));
+        }
+
+        if (chan_monthly_total_power_consumption != null) {
+            publishChannelIfLinked(chan_monthly_total_power_consumption.getUID(),
+                    new QuantityType<>(
+                            getNumericValueOfString(responseData.getCommon().getLOAD().getMonthLoadConsumptionSum()),
+                            Units.WATT_HOUR));
+        }
+
+        if (chan_daily_direct_power_consumption != null) {
+            publishChannelIfLinked(chan_daily_direct_power_consumption.getUID(),
+                    new QuantityType<>(
+                            getNumericValueOfString(
+                                    responseData.getCommon().getLOAD().getTodayPvDirectConsumptionEnegy()),
+                            Units.WATT_HOUR));
+        }
+
+        if (chan_monthly_direct_power_consumption != null) {
+            publishChannelIfLinked(chan_monthly_direct_power_consumption.getUID(),
+                    new QuantityType<>(
+                            getNumericValueOfString(
+                                    responseData.getCommon().getLOAD().getMonthPvDirectConsumptionEnergy()),
+                            Units.WATT_HOUR));
+        }
+
+        if (chan_month_co2_savings != null) {
+            publishChannelIfLinked(chan_month_co2_savings.getUID(),
+                    new QuantityType<>(
+                            ((getNumericValueOfString(responseData.getCommon().getPV().getTodayMonthPvGenerationSum()))
+                                    * co2factor) / 1000,
+                            SIUnits.KILOGRAM));
+
+        }
+
+        if (chan_month_paid != null) {
+            double buy = getNumericValueOfString(responseData.getCommon().getGRID().getMonthGridPowerPurchaseEnergy());
+            // given in Wh... need it in kWh
+            buy = buy / 1000;
+            buy = buy * eurprokwh;
+
+            publishChannelIfLinked(chan_month_paid.getUID(), buy);
+        }
+
+        if (chan_month_earnings != null) {
+            double sell = getNumericValueOfString(responseData.getCommon().getGRID().getMonthGridFeedInEnergy());
+            // given in Wh... need it in kWh
+            sell = sell / 1000;
+            sell = sell * eurprokwhs;
+            publishChannelIfLinked(chan_month_earnings.getUID(), sell);
+        }
+
+        if (chan_month_savings != null) {
+            double savings = getNumericValueOfString(responseData.getCommon().getLOAD().getMonthLoadConsumptionSum())
+                    - getNumericValueOfString(responseData.getCommon().getLOAD().getMonthGridPowerPurchaseEnergy());
+            // given in Wh... need it in kWh
+            savings = savings / 1000.00;
+            savings = savings * eurprokwh;
+            publishChannelIfLinked(chan_month_savings.getUID(), savings);
+        }
+    }
+
+    @Override
+    public void responseCallbackError(FailReason reason) {
+        switch (reason) {
+            case COMMUNICATION_ERROR:
+                break;
+            case CRITICAL:
+                stopPolling();
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.NONE, "Critical error - File a bug report please!");
+                break;
+            case NONE:
+                break;
+            case WRONG_CREDENTIALS:
+                break;
+            default:
+                break;
+
+        }
     }
 }

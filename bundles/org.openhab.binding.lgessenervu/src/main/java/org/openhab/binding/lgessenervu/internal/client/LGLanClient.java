@@ -142,6 +142,7 @@ public class LGLanClient extends LGEssClient {
             stats = gson.fromJson(jsonresp_stats, Statistics.class);
         } catch (Exception e) {
             logger.error("{}", e.getMessage());
+            // auth_key failed
         }
 
         responseData.setDatasource(DataSource.LAN_API);
@@ -153,17 +154,19 @@ public class LGLanClient extends LGEssClient {
             responseData.setStats(stats);
         }
 
-        if (mycallb != null) {
-            mycallb.responseCallbackCurrentData(responseData);
+        final IResponseCallback tmpcallb = mycallb;
+
+        if (tmpcallb != null) {
+            tmpcallb.responseCallbackCurrentData(responseData);
+            tmpcallb.responseCallbackDaily(responseData);
         } else {
             setLoginstatus(false, FailReason.NONE);
         }
-
     }
 
     @Override
     public void get15MinOverview() {
-        // TODO Auto-generated method stub
+        // not needed in lan mode. all data is provided within the same request..
     }
 
     // post

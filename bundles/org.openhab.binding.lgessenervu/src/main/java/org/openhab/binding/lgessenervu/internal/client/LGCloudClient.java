@@ -15,7 +15,9 @@ package org.openhab.binding.lgessenervu.internal.client;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -30,13 +32,7 @@ import org.openhab.binding.lgessenervu.internal.LGEssEnervuBindingConstants.Data
 import org.openhab.binding.lgessenervu.internal.LGEssEnervuBindingConstants.FailReason;
 import org.openhab.binding.lgessenervu.internal.client.gson.cloud.OverviewData;
 import org.openhab.binding.lgessenervu.internal.client.gson.cloud.Snapshot;
-import org.openhab.binding.lgessenervu.internal.client.gson.lan.BATT;
 import org.openhab.binding.lgessenervu.internal.client.gson.lan.Common;
-import org.openhab.binding.lgessenervu.internal.client.gson.lan.Direction;
-import org.openhab.binding.lgessenervu.internal.client.gson.lan.GRID;
-import org.openhab.binding.lgessenervu.internal.client.gson.lan.LOAD;
-import org.openhab.binding.lgessenervu.internal.client.gson.lan.PCS;
-import org.openhab.binding.lgessenervu.internal.client.gson.lan.PV;
 import org.openhab.binding.lgessenervu.internal.client.gson.lan.Statistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +50,7 @@ public class LGCloudClient extends LGEssClient {
 
     // private final String URL_BASE = "https://enervu.lg-ess.com/";
     // private final String URL_BASE_ENDUSERLOGIN = "https://enervu.lg-ess.com/end_user_login.do";
-    private final String URL_BASE_GETSIGNINURL = "https://enervu.lg-ess.com/user/getSignInUrl";
+    private final String URL_BASE_GET_SIGNINURL = "https://enervu.lg-ess.com/user/getSignInUrl";
     private final String URL_BASE_SIGNINURL = "https://de.lgaccount.com/login/sign_in?appKey=&svcCode=SVC951&country=DE&language=de-DE&callbackUrl=https%253A%252F%252Fenervu.lg-ess.com%252Femp%252FendUserSignIn&show_3rd_party_login=N&expire_session=N";
     private final String URL_LOGIN = "https://de.emp.lgsmartplatform.com/emp/v2.0/account/session/%s";
     private final String URL_BASE_ENDUSERSIGNIN = "https://enervu.lg-ess.com/emp/endUserSignIn?sid=%s";
@@ -79,6 +75,9 @@ public class LGCloudClient extends LGEssClient {
             generatedPassword = sb.toString();
         } catch (NoSuchAlgorithmException ex) {
             logger.error("{}", ex.getMessage(), ex);
+            if (null != mycallb) {
+                mycallb.responseCallbackError(FailReason.CRITICAL);
+            }
         }
         return generatedPassword;
     }
@@ -86,6 +85,128 @@ public class LGCloudClient extends LGEssClient {
     @Override
     public void setPassword(String passw) {
         this.password = get_SHA_512_SecurePassword(passw, "");
+    }
+
+    private Request addHeader(Request req, String timestamp, String signature) {
+        req.getHeaders().add("Accept",
+                "application/json,text/html,application/xhtml+xml,application/xml,image/webp,*/*; q=0.01");
+
+        req.getHeaders().add("X-Lge-Svccode", "SVC709");
+        req.getHeaders().add("X-Device-Country", "DE");
+        req.getHeaders().add("X-Device-Language", "de-DE");
+        req.getHeaders().add("X-Device-Publish-Flag", "Y");
+        req.getHeaders().add("X-Device-Type", "P01");
+        req.getHeaders().add("X-Application-Key", "6V1V8H2BN5P9ZQGOI5DAQ92YZBDO3EK9");
+        req.getHeaders().add("X-Device-Platform", "PC");
+        req.getHeaders().add("X-Device-Language-Type", "IETF");
+        req.getHeaders().add("X-Timestamp", timestamp);
+        req.getHeaders().add("X-Signature", signature);
+        return req;
+    }
+
+    private String extractSessionID(String response) {
+        String sessionid = "";
+
+        try {
+            sessionid = response.substring(response.indexOf("emp;"));
+            sessionid = sessionid.substring(0, sessionid.indexOf("\""));
+        } catch (Exception e) {
+            sessionid = "";
+        }
+        return sessionid;
+    }
+
+    /**
+     *
+     * @param response http response as string
+     * @param type either TimestampG or SignatureG
+     * @return the value for either TimeStampG or SignatureG
+     */
+    private String extractTimestampOrSignature(String response, String type) {
+        String retval = "";
+
+        if (response.isBlank()) {
+            return retval;
+        }
+
+        try {
+            retval = response.substring(response.indexOf(type + " ||"));
+            retval = retval.substring(retval.indexOf("\"") + 1, retval.indexOf(";") - 1);
+        } catch (Exception e) {
+            retval = "";
+        }
+        return retval;
+    }
+
+    private String extractSystemID(String response) {
+        String retval = "";
+
+        try {
+            retval = response.substring(response.indexOf("var systemId"), response.indexOf("var systemId") + 25);
+            retval = retval.substring(retval.indexOf("'") + 1, retval.indexOf(";") - 1);
+        } catch (Exception e) {
+            retval = "";
+        }
+        return retval;
+    }
+
+    private String extractESSID(String response) {
+        String retval = "";
+
+        try {
+            retval = response.substring(response.indexOf("id=\"essId\""));
+            retval = retval.substring(retval.indexOf("value"));
+            retval = retval.substring(retval.indexOf("\"") + 1, retval.indexOf("/") - 1);
+        } catch (Exception e) {
+            retval = "";
+        }
+        return retval;
+    }
+
+    private String performRequest(HttpMethod method, String url, String tstamp, String signature) {
+        Request req = null;
+        ContentResponse res = null;
+        String response = "";
+
+        final HttpClient myhttpclient = this.httpClient;
+
+        if (myhttpclient != null) {
+            req = myhttpclient.newRequest(url).method(method).timeout(timeout, TimeUnit.SECONDS);
+            req = addHeader(req, tstamp, signature);
+
+            if (HttpMethod.POST == method) {
+                Fields fields = new Fields(true);
+                // not neccessary to post password every time..
+                if (url.contains(userid)) {
+                    fields.put("user_auth2", password);
+                }
+                fields.put("svc_list", "SVC951");
+                fields.put("countryCode", "DE");
+                fields.put("isMobile", "false");
+                fields.put("type", "E");
+                req.content(new FormContentProvider(fields));
+            }
+
+            try {
+                res = req.send();
+
+                if (res.getStatus() != HttpStatus.OK_200) {
+                    response = "";
+                } else {
+                    response = res.getContentAsString();
+                }
+
+            } catch (TimeoutException ex) {
+                response = "";
+            } catch (InterruptedException e) {
+                response = "";
+            } catch (ExecutionException e) {
+                response = "";
+            }
+
+        }
+
+        return response;
     }
 
     @Override
@@ -98,235 +219,138 @@ public class LGCloudClient extends LGEssClient {
         }
 
         String response = "";
-        ContentResponse res = null;
-        // Request req = null;
-        Fields fields = null;
 
-        final HttpClient myhttpclient = this.httpClient;
-        if (myhttpclient != null) {
+        // get base url
+        performRequest(HttpMethod.POST, URL_BASE_GET_SIGNINURL, "", "");
+        response = performRequest(HttpMethod.GET, URL_BASE_SIGNINURL, "", "");
 
-            // get signin url
-            Request req = myhttpclient.newRequest(URL_BASE_GETSIGNINURL).method(HttpMethod.POST).timeout(timeout,
-                    TimeUnit.SECONDS);
-            fields = new Fields(true);
-            fields.put("countryCode", "DE");
-            fields.put("isMobile", "false");
-            req.content(new FormContentProvider(fields));
-            req.method(HttpMethod.POST);
-            // add header
-            req.getHeaders().add("Host", "enervu.lg-ess.com");
-            req.getHeaders().add("Accept", "application/json, text/javascript, */*; q=0.01");
-            req.getHeaders().add("Accept-Language", "de,en-US;q=0.7,en;q=0.3");
-            req.getHeaders().add("Accept-Encoding", "gzip, deflate, br");
-            req.getHeaders().add("X-Requested-With", "XMLHttpRequest");
-            req.getHeaders().add("Origin", "https://enervu.lg-ess.com");
-            req.getHeaders().add("Referer", "https://enervu.lg-ess.com/end_user_login.do");
+        String timestamp = extractTimestampOrSignature(response, "timestampG");
+        String signature = extractTimestampOrSignature(response, "signatureG");
 
-            try {
-                res = req.send();
-
-                req = myhttpclient.newRequest(URL_BASE_SIGNINURL).method(HttpMethod.GET).timeout(timeout,
-                        TimeUnit.SECONDS);
-                res = req.send();
-
-                response = res.getContentAsString();
-
-            } catch (Exception ex) {
-                logger.error("{}", ex.getMessage(), ex);
-            }
-
-            if (null == response || response.isBlank()) {
-                setLoginstatus(false, FailReason.COMMUNICATION_ERROR);
-                return;
-            }
-
-            // extract timestamp and signature...
-            String timestamp = response.substring(response.indexOf("timestampG ||"));
-            timestamp = timestamp.substring(timestamp.indexOf("\"") + 1, timestamp.indexOf(";") - 1);
-
-            String signature = response.substring(response.indexOf("signatureG ||"));
-            signature = signature.substring(signature.indexOf("\"") + 1, signature.indexOf(";") - 1);
-
-            // login post
-            fields = new Fields(true);
-            fields.put("user_auth2", password);
-            fields.put("svc_list", "SVC951");
-
-            req = myhttpclient.newRequest(String.format(URL_LOGIN, userid)).method(HttpMethod.POST).timeout(timeout,
-                    TimeUnit.SECONDS);
-
-            req.getHeaders().add("Accept", "application/json");
-            req.getHeaders().add("Accept-Encoding", "gzip, deflate, br");
-            req.getHeaders().add("Access-Control-Allow-Origin", "*");
-
-            req.getHeaders().add("X-Lge-Svccode", "SVC709");
-            req.getHeaders().add("X-Device-Country", "DE");
-            req.getHeaders().add("X-Device-Language", "de-DE");
-            req.getHeaders().add("X-Device-Publish-Flag", "Y");
-            req.getHeaders().add("X-Device-Type", "P01");
-            req.getHeaders().add("X-Application-Key", "6V1V8H2BN5P9ZQGOI5DAQ92YZBDO3EK9");
-            req.getHeaders().add("X-Device-Platform", "PC");
-            req.getHeaders().add("X-Device-Language-Type", "IETF");
-
-            req.getHeaders().add("Origin", "https://de.lgaccount.com");
-            req.getHeaders().add("Host", "de.emp.lgsmartplatform.com");
-            req.getHeaders().add("Referer", "https://de.lgaccount.com/");
-            req.getHeaders().add("X-Timestamp", timestamp);
-            req.getHeaders().add("X-Signature", signature);
-
-            req.agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0");
-            req.accept("application/json");
-            // req.header("X-Requested-With", "XMLHttpRequest");
-            req.content(new FormContentProvider(fields));
-            req.method(HttpMethod.POST);
-
-            try {
-                res = req.send();
-                logger.warn("status -> {}", res.getStatus());
-                if (res.getStatus() == HttpStatus.FORBIDDEN_403 || res.getStatus() == HttpStatus.NOT_ACCEPTABLE_406) {
-                    response = "";
-                } else if (res.getStatus() == HttpStatus.OK_200) {
-
-                    response = res.getContentAsString();
-                    sessionid = response.substring(response.indexOf("emp;"));
-                    sessionid = sessionid.substring(0, sessionid.indexOf("\""));
-
-                    req = myhttpclient.newRequest(String.format(URL_BASE_ENDUSERSIGNIN, sessionid))
-                            .method(HttpMethod.GET).timeout(timeout, TimeUnit.SECONDS);
-                    res = req.send();
-                }
-
-            } catch (Exception ex) {
-                logger.error("{}", ex.getMessage(), ex);
-                response = "";
-            }
-
-            if (response.isBlank()) {
-                setLoginstatus(false, FailReason.WRONG_CREDENTIALS);
-                return;
-            }
-
-            getSystemIDs();
-        } else {
-            setLoginstatus(false, FailReason.NONE);
+        if ((timestamp.isBlank() || signature.isBlank()) && (null != mycallb)) {
+            mycallb.responseCallbackError(FailReason.PARSING_ERROR);
+            return;
         }
 
-    }
+        response = performRequest(HttpMethod.POST, String.format(URL_LOGIN, userid), timestamp, signature);
+        sessionid = extractSessionID(response);
 
-    /**
-     * retrieve System and ESS-ID which are needed for further requests
-     */
-    private void getSystemIDs() {
-        ContentResponse res = null;
+        if (sessionid.isBlank() && mycallb != null) {
+            mycallb.responseCallbackError(FailReason.WRONG_CREDENTIALS);
+            return;
+        }
 
-        final HttpClient myhttpclient = this.httpClient;
+        response = performRequest(HttpMethod.GET, String.format(URL_BASE_ENDUSERSIGNIN, sessionid), "", "");
 
-        if (myhttpclient != null) {
+        if (response.isBlank()) {
+            setLoginstatus(false, FailReason.WRONG_CREDENTIALS);
+            return;
+        }
 
-            Request req = myhttpclient.newRequest(URL_GETBASICDATA).method(HttpMethod.POST).timeout(timeout,
-                    TimeUnit.SECONDS);
+        response = performRequest(HttpMethod.POST, URL_GETBASICDATA, "", "");
 
-            String response = "";
+        SYSTEM_ID = extractSystemID(response);
+        ESS_ID = extractESSID(response);
 
-            Fields fields = new Fields(true);
-            fields.put("isMobile", "N");
-            fields.put("type", "E");
-            req.content(new FormContentProvider(fields));
-            req.method(HttpMethod.POST);
-
-            req.getHeaders().add("Host", "enervu.lg-ess.com");
-            req.getHeaders().add("Accept",
-                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-            req.getHeaders().add("Accept-Language", "de,en-US;q=0.7,en;q=0.3");
-            req.getHeaders().add("Accept-Encoding", "gzip, deflate, br");
-            req.getHeaders().add("Origin", "https://enervu.lg-ess.com");
-            req.getHeaders().add("Referer", "https://enervu.lg-ess.com/");
-            req.getHeaders().add("DNT", "1");
-            req.getHeaders().add("Upgrade-Insecure-Requests", "1");
-
-            try {
-                res = req.send();
-                response = res.getContentAsString();
-            } catch (Exception ex) {
-                logger.error("{}", ex.getMessage(), ex);
-            }
-
-            if (response.isBlank()) {
-                setLoginstatus(false, FailReason.COMMUNICATION_ERROR);
-                return;
-            }
-
-            // extract systemid
-            String systemid = "";
-            try {
-                systemid = response.substring(response.indexOf("var systemId"), response.indexOf("var systemId") + 25);
-                systemid = systemid.substring(systemid.indexOf("'") + 1, systemid.indexOf(";") - 1);
-                SYSTEM_ID = systemid;
-
-                String nowdate = "";
-                nowdate = response.substring(response.indexOf("nowDate"), response.indexOf("nowDate") + 25);
-                nowdate = nowdate.substring(nowdate.indexOf("'") + 1, nowdate.indexOf(";") - 1);
-                // TODAY = nowdate;
-
-                String essId = "";
-                essId = response.substring(response.indexOf("id=\"essId\""));
-                essId = essId.substring(essId.indexOf("value"));
-                essId = essId.substring(essId.indexOf("\"") + 1, essId.indexOf("/") - 1);
-                ESS_ID = essId;
-            } catch (Exception ex) {
-                logger.error("{}", ex.getMessage(), ex);
-            }
-
-            if (false == ESS_ID.isBlank() && false == SYSTEM_ID.isBlank()) {
-                setLoginstatus(true, FailReason.NONE);
-            } else {
-                setLoginstatus(false, FailReason.WRONG_CREDENTIALS);
-            }
+        if (false == ESS_ID.isBlank() && false == SYSTEM_ID.isBlank()) {
+            setLoginstatus(true, FailReason.NONE);
         } else {
-            setLoginstatus(false, FailReason.NONE);
+            setLoginstatus(false, FailReason.WRONG_CREDENTIALS);
         }
     }
 
-    private ResponseData convertCloudAPItoLANAPI(@Nullable Snapshot data) {
+    private ResponseData convertCloudAPItoLANAPI(@Nullable Snapshot snapshotdata, @Nullable OverviewData overview) {
 
-        Common common = null;
-        Statistics stats = null;
-        Direction direction = null;
+        Common common = new Common();
+        Statistics stats = new Statistics();
+
         ResponseData responseData = null;
 
-        if (null == data) {
-            return new ResponseData();
+        if (null != snapshotdata) {
+
+            common.getPV().setPv1Power(String.valueOf(snapshotdata.getEssSnapshotList().get(0).getPvPower()));
+
+            common.getBATT().setSoc(String.valueOf(snapshotdata.getEssSnapshotList().get(0).getBattSoc()));
+            common.getBATT().setStatus(String.valueOf(snapshotdata.getEssSnapshotList().get(0).getBattStatus()));
+            common.getBATT().setDcPower(String.valueOf(snapshotdata.getEssSnapshotList().get(0).getBattPower()));
+
+            common.getGRID().setActivePower(String.valueOf(snapshotdata.getEssSnapshotList().get(0).getGridPower()));
+
+            common.getLOAD().setLoadPower(String.valueOf(snapshotdata.getEssSnapshotList().get(0).getLoadPower()));
+
+            stats.getDirection().setIsDirectConsuming(
+                    String.valueOf(snapshotdata.getEssSnapshotList().get(0).getIsDirectConsuming()));
+            stats.getDirection().setIsBatteryCharging(
+                    String.valueOf(snapshotdata.getEssSnapshotList().get(0).getIsBatteryCharging()));
+            stats.getDirection().setIsBatteryDischarging(
+                    String.valueOf(snapshotdata.getEssSnapshotList().get(0).getIsBatteryDischarging()));
+            stats.getDirection()
+                    .setIsGridSelling(String.valueOf(snapshotdata.getEssSnapshotList().get(0).getIsGridSelling()));
+            stats.getDirection()
+                    .setIsGridBuying(String.valueOf(snapshotdata.getEssSnapshotList().get(0).getIsGridBuying()));
+            stats.getDirection().setIsChargingFromGrid(
+                    String.valueOf(snapshotdata.getEssSnapshotList().get(0).getIsChargingFromGrid()));
+
         }
 
-        PV pv = new PV();
-        pv.setPv1Power(String.valueOf(data.getEssSnapshotList().get(0).getPvPower()));
+        if (null != overview) {
 
-        BATT batt = new BATT();
-        batt.setSoc(String.valueOf(data.getEssSnapshotList().get(0).getBattSoc()));
-        batt.setStatus(String.valueOf(data.getEssSnapshotList().get(0).getBattStatus()));
-        batt.setDcPower(String.valueOf(data.getEssSnapshotList().get(0).getBattPower()));
+            /*
+             * "totalBattChg":1150.0,
+             * "totalBattDis":675.0,
+             * "totalGridESell":16.0,
+             * "totalGridEBuy":111508.0,
+             * "totalDirectConsumpE":5591.0,
+             * "totalConsumpE":0.0,
+             * "totalPvE":6757.0,
+             */
 
-        GRID grid = new GRID();
-        grid.setActivePower(String.valueOf(data.getEssSnapshotList().get(0).getGridPower()));
+            common.getLOAD().setTodayLoadConsumptionSum(String.valueOf(overview.getDayResult().getTotalConsumpE()));
+            common.getLOAD().setMonthLoadConsumptionSum(String.valueOf(
+                    overview.getMonthResult().getTotalGridEBuy() + overview.getMonthResult().getTotalDirectConsumpE()));
 
-        LOAD load = new LOAD();
-        load.setLoadPower(String.valueOf(data.getEssSnapshotList().get(0).getLoadPower()));
+            common.getPV().setTodayPvGenerationSum(String.valueOf(overview.getDayResult().getTotalPvE()));
+            common.getPV().setTodayMonthPvGenerationSum(String.valueOf(overview.getMonthResult().getTotalPvE()));
 
-        common = new Common(pv, batt, grid, load, new PCS());
+            common.getGRID().setTodayGridFeedInEnergy(String.valueOf(overview.getDayResult().getTotalGridESell()));
+            common.getGRID().setMonthGridFeedInEnergy(String.valueOf(overview.getMonthResult().getTotalGridESell()));
 
-        stats = new Statistics();
-        direction = new Direction();
-        direction.setIsDirectConsuming(String.valueOf(data.getEssSnapshotList().get(0).getIsDirectConsuming()));
-        direction.setIsBatteryCharging(String.valueOf(data.getEssSnapshotList().get(0).getIsBatteryCharging()));
-        direction.setIsBatteryDischarging(String.valueOf(data.getEssSnapshotList().get(0).getIsBatteryDischarging()));
-        direction.setIsGridSelling(String.valueOf(data.getEssSnapshotList().get(0).getIsGridSelling()));
-        direction.setIsGridBuying(String.valueOf(data.getEssSnapshotList().get(0).getIsGridBuying()));
-        direction.setIsChargingFromGrid(String.valueOf(data.getEssSnapshotList().get(0).getIsChargingFromGrid()));
+            common.getBATT().setTodayBattChargeEnergy(String.valueOf(overview.getDayResult().getTotalBattChg()));
+            common.getBATT().setMonthBattChargeEnergy(String.valueOf(overview.getMonthResult().getTotalBattChg()));
 
-        stats.setDirection(direction);
+            common.getBATT().setTodayBattDischargeEnery(String.valueOf(overview.getDayResult().getTotalBattDis()));
+            common.getBATT().setMonthBattDischargeEnergy(String.valueOf(overview.getMonthResult().getTotalBattDis()));
+
+            common.getLOAD()
+                    .setTodayPvDirectConsumptionEnegy(String.valueOf(overview.getDayResult().getTotalDirectConsumpE()));
+            common.getLOAD().setMonthPvDirectConsumptionEnergy(
+                    String.valueOf(overview.getMonthResult().getTotalDirectConsumpE()));
+
+            double monthtotalconsumption = 0;
+            // not sure why response is 0...
+            if (overview.getMonthResult().getTotalConsumpE() < 1) {
+                monthtotalconsumption = overview.getMonthResult().getTotalBattDis()
+                        + overview.getMonthResult().getTotalDirectConsumpE()
+                        + overview.getMonthResult().getTotalGridEBuy();
+
+            } else {
+                monthtotalconsumption = overview.getMonthResult().getTotalConsumpE();
+            }
+
+            common.getLOAD()
+                    .setMonthGridPowerPurchaseEnergy(String.valueOf(overview.getMonthResult().getTotalGridEBuy()));
+            common.getGRID()
+                    .setMonthGridPowerPurchaseEnergy(String.valueOf(overview.getMonthResult().getTotalGridEBuy()));
+
+            common.getLOAD()
+                    .setTodayGridPowerPurchaseEnergy(String.valueOf(overview.getDayResult().getTotalGridEBuy()));
+            common.getGRID()
+                    .setTodayGridPowerPurchaseEnergy(String.valueOf(overview.getDayResult().getTotalGridEBuy()));
+            // common.getPV().setTodayPvGenerationSum())) * co2factor
+
+        }
 
         responseData = new ResponseData(common, stats, DataSource.CLOUD_API_V1);
-
         return responseData;
     }
 
@@ -363,17 +387,13 @@ public class LGCloudClient extends LGEssClient {
             try {
                 res = req.send();
                 jsonresp = res.getContentAsString();
-                logger.debug("Snapshot -> {}", jsonresp);
+                // logger.warn("Snapshot -> {}", jsonresp);
                 data = gson.fromJson(jsonresp, Snapshot.class);
                 // match old cloud api data to lan/new cloud api data
-
-                responseData = convertCloudAPItoLANAPI(data);
+                responseData = convertCloudAPItoLANAPI(data, null);
 
             } catch (Exception e) {
                 logger.error("got exception on send! :/ {}", e.getMessage());
-            }
-
-            if (null == responseData) {
                 responseData = new ResponseData();
             }
 
@@ -385,7 +405,6 @@ public class LGCloudClient extends LGEssClient {
         } else {
             setLoginstatus(false, FailReason.NONE);
         }
-
     }
 
     /**
@@ -396,8 +415,12 @@ public class LGCloudClient extends LGEssClient {
      */
     @Override
     public void get15MinOverview() {
+        @Nullable
         OverviewData data = null;
+
+        ResponseData responseData = null;
         String jsonresp = "";
+        ContentResponse res = null;
 
         logger.debug("get15MinSOverview called with {}", getLoginStatus());
         if (false == getLoginStatus()) {
@@ -410,38 +433,31 @@ public class LGCloudClient extends LGEssClient {
             Request req = myhttpclient.newRequest(URL_GET15MinOverview).method(HttpMethod.POST).timeout(timeout,
                     TimeUnit.SECONDS);
 
-            // Request req = httpClient.POST(URL_GET15MinOverview);
-            ContentResponse res = null;
             Fields fields = new Fields(true);
             fields.put("systemId", SYSTEM_ID);
             req.content(new FormContentProvider(fields));
-            req.method(HttpMethod.POST);
 
             try {
                 res = req.send();
                 jsonresp = res.getContentAsString();
+                data = gson.fromJson(jsonresp, OverviewData.class);
+                // match old cloud api data to lan/new cloud api data
+                logger.warn("overview {}", jsonresp);
+                responseData = convertCloudAPItoLANAPI(null, data);
+                responseData.setDatasource(DataSource.CLOUD_API_V1);
             } catch (Exception e) {
                 logger.error("{}", e.getMessage(), e);
-            }
-            if (jsonresp.isBlank() || jsonresp.toLowerCase().contains("error")
-                    || jsonresp.toLowerCase().contains("nosession") || jsonresp.toLowerCase().contains("timeout")) {
-                setLoginstatus(false, FailReason.NONE);
-                return;
+                responseData = new ResponseData();
             }
 
-            try {
-                data = gson.fromJson(jsonresp, OverviewData.class);
-            } catch (Exception e) {
-                logger.error("{}", e.getMessage());
-            }
-
-            if (null != mycallb && null != data) {
-                mycallb.responseCallbackDaily(data);
+            if (mycallb != null) {
+                mycallb.responseCallbackDaily(responseData);
             } else {
                 setLoginstatus(false, FailReason.NONE);
             }
         } else {
             setLoginstatus(false, FailReason.NONE);
         }
+
     }
 }

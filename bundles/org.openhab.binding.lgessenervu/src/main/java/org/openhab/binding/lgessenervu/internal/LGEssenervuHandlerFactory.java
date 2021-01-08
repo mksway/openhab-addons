@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
+import org.openhab.core.i18n.LocaleProvider;
 import org.openhab.core.scheduler.CronScheduler;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingTypeUID;
@@ -28,6 +29,8 @@ import org.openhab.core.thing.binding.ThingHandlerFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The {@link LGEssenervuHandlerFactory} is responsible for creating things and thing
@@ -39,10 +42,13 @@ import org.osgi.service.component.annotations.Reference;
 @Component(configurationPid = "binding.lgessenervu", service = ThingHandlerFactory.class)
 public class LGEssenervuHandlerFactory extends BaseThingHandlerFactory {
 
+    private final Logger logger = LoggerFactory.getLogger(LGEssenervuHandlerFactory.class);
+
     private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_POWERROUTER);
 
     private final @Nullable HttpClient httpClient;
     private @Nullable CronScheduler cronscheduler;
+    protected @NonNullByDefault({}) LocaleProvider localeProvider;
 
     @Activate
     public LGEssenervuHandlerFactory(@Reference LGEssHttpClientFactory httpClientFactory) {
@@ -59,6 +65,7 @@ public class LGEssenervuHandlerFactory extends BaseThingHandlerFactory {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
         if (THING_TYPE_POWERROUTER.equals(thingTypeUID)) {
+            logger.warn("locale -> {}", localeProvider);
             return new LGEssenervuHandler(thing, httpClient, this.cronscheduler);
         }
 

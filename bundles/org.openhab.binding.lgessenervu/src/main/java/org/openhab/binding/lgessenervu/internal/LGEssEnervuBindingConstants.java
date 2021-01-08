@@ -41,7 +41,9 @@ public class LGEssEnervuBindingConstants {
     public static enum FailReason {
         NONE,
         WRONG_CREDENTIALS,
-        COMMUNICATION_ERROR
+        COMMUNICATION_ERROR,
+        PARSING_ERROR,
+        CRITICAL
     }
 
     // List of all Thing Type UIDs
@@ -70,24 +72,23 @@ public class LGEssEnervuBindingConstants {
     public static final String CHANNEL_BATTERY_STATUS = "batteryStatus";
     public static final String CHANNEL_BATTERY_WINTERMODE = "batteryWintermode";
 
-    public static final String CHANNEL_CURRENT_POWER_FROM_BATTERY = "currentPowerDischargingBattery";
+    public static final String CHANNEL_CURRENT_POWER_FROM_BATTERY = "currentPowerDischargingFromBattery";
     public static final String CHANNEL_CURRENT_POWER_TO_BATTERY = "currentPowerChargingToBattery";
 
-    public static final String CHANNEL_DAILY_POWER_FROM_BATTERY = "dailyBatteryDischarge";
+    public static final String CHANNEL_DAILY_POWER_FROM_BATTERY = "dailyPowerDischargingFromBattery";
     public static final String CHANNEL_DAILY_POWER_TO_BATTERY = "dailyBatteryCharge";
 
-    public static final String CHANNEL_MONTHLY_POWER_FROM_BATTERY = "monthlyBatteryDischarge";
+    public static final String CHANNEL_MONTHLY_POWER_FROM_BATTERY = "monthlyPowerDischargingFromBattery";
     public static final String CHANNEL_MONTHLY_POWER_TO_BATTERY = "monthlyBatteryCharge";
 
     // LOAD
     public static final String CHANNEL_CURRENT_TOTAL_POWER_CONSUMPTION = "currentTotalPowerConsumption";
-    public static final String CHANNEL_CURRENT_DIRECT_POWER_CONSUMPTION = "currentDirectPowerConsumption";
-
     public static final String CHANNEL_DAILY_TOTAL_POWER_CONSUMPTION = "dailyTotalPowerConsumption";
-    public static final String CHANNEL_MONTHLY_TOTAL_POWER_CONSUMPTION = "monthlyPowerConsumption";
+    public static final String CHANNEL_MONTHLY_TOTAL_POWER_CONSUMPTION = "monthlyTotalPowerConsumption";
 
-    public static final String CHANNEL_DAILY_DIRECT_POWER_CONSUMPTION_FROM_PV = "dailyDirecPowerConsumptionFromPV";
-    public static final String CHANNEL_MONTHLY_DIRECT_POWER_CONSUMPTION_FROM_PV = "monthlyDirecPowerConsumptionFromPV";
+    public static final String CHANNEL_CURRENT_DIRECT_POWER_CONSUMPTION = "currentDirectPowerConsumption";
+    public static final String CHANNEL_DAILY_DIRECT_POWER_CONSUMPTION_FROM_PV = "dailyDirectPowerConsumption";
+    public static final String CHANNEL_MONTHLY_DIRECT_POWER_CONSUMPTION_FROM_PV = "monthlyDirectPowerConsumption";
 
     // STATUS
     public static final String CHANNEL_ISDIRECTUSE = "isDirectConsuming";
@@ -98,8 +99,8 @@ public class LGEssEnervuBindingConstants {
     public static final String CHANNEL_ISCHARGINGFROMGRID = "isChargingFromGrid";
 
     // monthly <- tbd in xml
-    public static final String CHANNEL_MONTHLYCO2SAVINGS = "monthlyCO2Savings";
-    public static final String CHANNEL_MONTHLYEARNINGS = "monthlyEarnings";
-    public static final String CHANNEL_MONTHLYPAID = "monthlyPaid";
-    public static final String CHANNEL_MONTHLYSAVINGS = "monthlySavings";
+    public static final String CHANNEL_MONTHLY_CO2SAVINGS = "monthlyCO2Savings";
+    public static final String CHANNEL_MONTHLY_EARNINGS = "monthlyEarnings";
+    public static final String CHANNEL_MONTHLY_PAID = "monthlyPaid";
+    public static final String CHANNEL_MONTHLY_SAVINGS = "monthlyMoneySavings";
 }

@@ -14,7 +14,7 @@ package org.openhab.binding.lgessenervu.internal.job;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.openhab.binding.lgessenervu.internal.client.LGCloudClient;
+import org.openhab.binding.lgessenervu.internal.client.LGEssClient;
 import org.openhab.core.scheduler.SchedulerRunnable;
 
 /**
@@ -25,10 +25,10 @@ import org.openhab.core.scheduler.SchedulerRunnable;
  */
 @NonNullByDefault
 public class FifteenMinJob implements SchedulerRunnable, Runnable {
-    private @Nullable LGCloudClient lgclient;
+    private @Nullable LGEssClient lgclient;
 
-    public FifteenMinJob(@Nullable LGCloudClient client) {
-        this.lgclient = client;
+    public FifteenMinJob(LGEssClient lgessClient) {
+        this.lgclient = lgessClient;
     }
 
     @Override
