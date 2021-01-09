@@ -28,6 +28,7 @@ import org.eclipse.jetty.client.util.FormContentProvider;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.util.Fields;
+import org.openhab.binding.lgessenervu.internal.LGEssEnervuBindingConstants;
 import org.openhab.binding.lgessenervu.internal.LGEssEnervuBindingConstants.DataSource;
 import org.openhab.binding.lgessenervu.internal.LGEssEnervuBindingConstants.FailReason;
 import org.openhab.binding.lgessenervu.internal.client.gson.cloud.OverviewData;
@@ -38,8 +39,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The {@link LGCloudClient} is responsible for retrieving data from the lg ess enervu cloud.
- *
+ * The {@link LGCloudClient} is responsible for retrieving data from the lg ess enervu cloud
+ * which will be accessed via https://enervu.lg-ess.com
  *
  * @author SkyRaVeR - initial contribution
  */
@@ -48,8 +49,6 @@ public class LGCloudClient extends LGEssClient {
 
     private final Logger logger = LoggerFactory.getLogger(LGCloudClient.class);
 
-    // private final String URL_BASE = "https://enervu.lg-ess.com/";
-    // private final String URL_BASE_ENDUSERLOGIN = "https://enervu.lg-ess.com/end_user_login.do";
     private final String URL_BASE_GET_SIGNINURL = "https://enervu.lg-ess.com/user/getSignInUrl";
     private final String URL_BASE_SIGNINURL = "https://de.lgaccount.com/login/sign_in?appKey=&svcCode=SVC951&country=DE&language=de-DE&callbackUrl=https%253A%252F%252Fenervu.lg-ess.com%252Femp%252FendUserSignIn&show_3rd_party_login=N&expire_session=N";
     private final String URL_LOGIN = "https://de.emp.lgsmartplatform.com/emp/v2.0/account/session/%s";
@@ -96,7 +95,7 @@ public class LGCloudClient extends LGEssClient {
         req.getHeaders().add("X-Device-Language", "de-DE");
         req.getHeaders().add("X-Device-Publish-Flag", "Y");
         req.getHeaders().add("X-Device-Type", "P01");
-        req.getHeaders().add("X-Application-Key", "6V1V8H2BN5P9ZQGOI5DAQ92YZBDO3EK9");
+        req.getHeaders().add("X-Application-Key", LGEssEnervuBindingConstants.LG_API_V1_APPKEY);
         req.getHeaders().add("X-Device-Platform", "PC");
         req.getHeaders().add("X-Device-Language-Type", "IETF");
         req.getHeaders().add("X-Timestamp", timestamp);
@@ -295,16 +294,6 @@ public class LGCloudClient extends LGEssClient {
 
         if (null != overview) {
 
-            /*
-             * "totalBattChg":1150.0,
-             * "totalBattDis":675.0,
-             * "totalGridESell":16.0,
-             * "totalGridEBuy":111508.0,
-             * "totalDirectConsumpE":5591.0,
-             * "totalConsumpE":0.0,
-             * "totalPvE":6757.0,
-             */
-
             common.getLOAD().setTodayLoadConsumptionSum(String.valueOf(overview.getDayResult().getTotalConsumpE()));
             common.getLOAD().setMonthLoadConsumptionSum(String.valueOf(
                     overview.getMonthResult().getTotalGridEBuy() + overview.getMonthResult().getTotalDirectConsumpE()));
@@ -326,17 +315,6 @@ public class LGCloudClient extends LGEssClient {
             common.getLOAD().setMonthPvDirectConsumptionEnergy(
                     String.valueOf(overview.getMonthResult().getTotalDirectConsumpE()));
 
-            double monthtotalconsumption = 0;
-            // not sure why response is 0...
-            if (overview.getMonthResult().getTotalConsumpE() < 1) {
-                monthtotalconsumption = overview.getMonthResult().getTotalBattDis()
-                        + overview.getMonthResult().getTotalDirectConsumpE()
-                        + overview.getMonthResult().getTotalGridEBuy();
-
-            } else {
-                monthtotalconsumption = overview.getMonthResult().getTotalConsumpE();
-            }
-
             common.getLOAD()
                     .setMonthGridPowerPurchaseEnergy(String.valueOf(overview.getMonthResult().getTotalGridEBuy()));
             common.getGRID()
@@ -357,7 +335,7 @@ public class LGCloudClient extends LGEssClient {
     @Override
     public void getCurrentData() {
 
-        logger.warn("DATA FROM CLOUD");
+        logger.debug("DATA FROM CLOUD");
 
         @Nullable
         Snapshot data = null;
@@ -387,7 +365,7 @@ public class LGCloudClient extends LGEssClient {
             try {
                 res = req.send();
                 jsonresp = res.getContentAsString();
-                // logger.warn("Snapshot -> {}", jsonresp);
+
                 data = gson.fromJson(jsonresp, Snapshot.class);
                 // match old cloud api data to lan/new cloud api data
                 responseData = convertCloudAPItoLANAPI(data, null);
@@ -442,7 +420,6 @@ public class LGCloudClient extends LGEssClient {
                 jsonresp = res.getContentAsString();
                 data = gson.fromJson(jsonresp, OverviewData.class);
                 // match old cloud api data to lan/new cloud api data
-                logger.warn("overview {}", jsonresp);
                 responseData = convertCloudAPItoLANAPI(null, data);
                 responseData.setDatasource(DataSource.CLOUD_API_V1);
             } catch (Exception e) {
@@ -458,6 +435,5 @@ public class LGCloudClient extends LGEssClient {
         } else {
             setLoginstatus(false, FailReason.NONE);
         }
-
     }
 }

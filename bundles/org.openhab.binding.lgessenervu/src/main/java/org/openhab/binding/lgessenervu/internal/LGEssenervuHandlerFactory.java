@@ -29,8 +29,6 @@ import org.openhab.core.thing.binding.ThingHandlerFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The {@link LGEssenervuHandlerFactory} is responsible for creating things and thing
@@ -41,8 +39,6 @@ import org.slf4j.LoggerFactory;
 @NonNullByDefault
 @Component(configurationPid = "binding.lgessenervu", service = ThingHandlerFactory.class)
 public class LGEssenervuHandlerFactory extends BaseThingHandlerFactory {
-
-    private final Logger logger = LoggerFactory.getLogger(LGEssenervuHandlerFactory.class);
 
     private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_POWERROUTER);
 
@@ -65,7 +61,6 @@ public class LGEssenervuHandlerFactory extends BaseThingHandlerFactory {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
         if (THING_TYPE_POWERROUTER.equals(thingTypeUID)) {
-            logger.warn("locale -> {}", localeProvider);
             return new LGEssenervuHandler(thing, httpClient, this.cronscheduler);
         }
 

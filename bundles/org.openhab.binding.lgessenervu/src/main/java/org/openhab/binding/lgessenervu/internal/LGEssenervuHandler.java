@@ -69,7 +69,7 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
     private @Nullable ScheduledCompletableFuture<?> fifteenminJob;
     private final Lock monitor = new ReentrantLock();
     private final Set<ScheduledFuture<?>> scheduledFutures = new HashSet<>();
-    private final String CRON_15MIN = "0 0/1 * ? * * *";
+    private final String CRON_15MIN = "0 0/15 * ? * * *";
 
     private LGEssClient lgessClient;
     private int refreshInterval;
@@ -99,7 +99,6 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
                 }
             });
         }
-
     }
 
     @Override

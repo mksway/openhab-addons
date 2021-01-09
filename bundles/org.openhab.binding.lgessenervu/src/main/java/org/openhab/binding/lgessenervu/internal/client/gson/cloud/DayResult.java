@@ -16,11 +16,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * The {@link DayResult} is responsible for creating things and thing
- * handlers.
+ * The {@link DayResult} is an auto generated DTO
  *
  * @author SkyRaVeR - initial contribution
  */
+
 public class DayResult {
 
     @SerializedName("systemId")

@@ -24,14 +24,14 @@ import org.slf4j.LoggerFactory;
 /**
  * Factory class to create Jetty web clients
  *
- * Some Daikin controllers communicate via https using a custom common name,
- * and they are accessed using an ip address.
+ * If accessing the powerrouter via LAN it is necessary to accept a self signed certificate.
  *
- * The core HttpClientFactory creates a HttpClient that will fail because of this.
- * This factory creates a HttpClient with SslContextFactory(true)
- * which will accept any ssl certificate without checking for common name mismatches.
  *
- * @author Jimmy Tanagra - Initial contribution
+ * The core HttpClientFactory does not allow self signed certificates.
+ * Therefore this factory creates a HttpClient with SslContextFactory(true)
+ * which will accept any ssl certificate.
+ *
+ * @author Martin Klama - Initial contribution
  */
 @Component
 @NonNullByDefault
@@ -46,9 +46,8 @@ public class LGEssHttpClientFactoryImpl implements LGEssHttpClientFactory {
         if (httpClient != null) {
             try {
                 httpClient.stop();
-                logger.debug("LGEssEnervu http client stopped");
             } catch (Exception e) {
-                logger.debug("error while stopping LGEssEnervu http client", e);
+                logger.debug("error while stopping custom LGEssEnervu http client", e);
             }
             httpClient = null;
         }
@@ -65,9 +64,7 @@ public class LGEssHttpClientFactoryImpl implements LGEssHttpClientFactory {
             httpClient = new HttpClient(new SslContextFactory.Client(true));
             try {
                 httpClient.start();
-                logger.debug("LGEssEnervu http client started");
             } catch (Exception e) {
-                logger.warn("Could not start LGEssEnervu http client", e);
                 httpClient = null;
             }
         }

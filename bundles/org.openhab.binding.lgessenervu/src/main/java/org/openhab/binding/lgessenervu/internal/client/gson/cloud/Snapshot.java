@@ -18,7 +18,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Auto generated class
+ * The {@link Snapshot} is an auto generated DTO
  *
  * @author SkyRaVeR - Initial contribution
  */

@@ -60,18 +60,16 @@ public abstract class LGEssClient {
         userid = "";
         password = "";
         loginstatus = false;
-        timeout = 5000;
+        timeout = 5;
         isLoginInProgess = false;
         gson = new Gson();
     }
 
     public void registerCallback(IResponseCallback callback) {
-        logger.debug("LGEssClient callback registered!");
         mycallb = callback;
     }
 
     public void unregisterCallback() {
-        logger.debug("LGEssClient callback un-registered!");
         mycallb = null;
     }
 

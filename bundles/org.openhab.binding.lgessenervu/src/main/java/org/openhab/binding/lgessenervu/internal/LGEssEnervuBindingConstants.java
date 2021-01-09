@@ -31,6 +31,8 @@ public class LGEssEnervuBindingConstants {
 
     public static final String POWERROUTER_THING_NAME = "powerrouter";
 
+    public static final String LG_API_V1_APPKEY = "6V1V8H2BN5P9ZQGOI5DAQ92YZBDO3EK9";
+
     public static enum DataSource {
         NONE,
         CLOUD_API_V1,
@@ -98,7 +100,7 @@ public class LGEssEnervuBindingConstants {
     public static final String CHANNEL_ISBUYING = "isGridBuying";
     public static final String CHANNEL_ISCHARGINGFROMGRID = "isChargingFromGrid";
 
-    // monthly <- tbd in xml
+    // monthly
     public static final String CHANNEL_MONTHLY_CO2SAVINGS = "monthlyCO2Savings";
     public static final String CHANNEL_MONTHLY_EARNINGS = "monthlyEarnings";
     public static final String CHANNEL_MONTHLY_PAID = "monthlyPaid";

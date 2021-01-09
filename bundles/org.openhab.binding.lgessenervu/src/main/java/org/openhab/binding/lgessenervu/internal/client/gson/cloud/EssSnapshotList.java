@@ -16,8 +16,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * The {@link EssSnapshotList} is responsible for creating things and thing
- * handlers.
+ * The {@link EssSnapshotList} is an auto generated DTO
  *
  * @author SkyRaVeR - initial contribution
  */

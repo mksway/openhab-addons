@@ -18,8 +18,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * The {@link CoResult} is responsible for creating things and thing
- * handlers.
+ * The {@link CoResult} is an auto generated DTO
  *
  * @author SkyRaVeR - initial contribution
  */

@@ -16,8 +16,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * The {@link OverviewData} is responsible for creating things and thing
- * handlers.
+ * The {@link OverviewData} is an auto generated DTO
  *
  * @author SkyRaVeR - initial contribution
  */

@@ -16,8 +16,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * The {@link MonthResult} is responsible for creating things and thing
- * handlers.
+ * The {@link MonthResult} is a DTO with data from the cloud
  *
  * @author SkyRaVeR - initial contribution
  */

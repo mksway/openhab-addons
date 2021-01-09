@@ -19,7 +19,7 @@ import org.eclipse.jetty.client.HttpClient;
 /**
  * Factory class to create Jetty http clients
  *
- * @author Jimmy Tanagra - Initial contribution
+ * @author Martin Klama - Initial contribution
  */
 @NonNullByDefault
 public interface LGEssHttpClientFactory {

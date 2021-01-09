@@ -18,7 +18,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Auto generated class
+ * The {@link PV} is an auto generated DTO
  *
  * @author Martin Klama - Initial contribution
  *

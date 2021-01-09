@@ -14,37 +14,37 @@
 			<channel id="currentPowerFromGrid" typeId="current_power_consumption_from_grid"/>
 			<channel id="dailyPowerFromGrid" typeId="daily_power_consumption_from_grid"/>
 			<channel id="monthlyPowerFromGrid" typeId="monthly_power_consumption_from_grid"/>
-			
+
 			<channel id="currentPowerToGrid" typeId="current_power_provided_to_grid"/>
 			<channel id="dailyPowerToGrid" typeId="daily_power_provided_to_grid"/>
 			<channel id="monthlyPowerToGrid" typeId="monthly_power_provided_to_grid"/>
 
-            <!-- PV -->
+			<!-- PV -->
 
-            <channel id="currentPowerFromPV" typeId="current_power_provided_by_pv"/>
+			<channel id="currentPowerFromPV" typeId="current_power_provided_by_pv"/>
 			<channel id="dailyPowerFromPV" typeId="daily_power_provided_by_pv"/>
 			<channel id="monthlyPowerFromPV" typeId="monthly_power_provided_by_pv"/>
-					
+
 
 			<!-- battery -->
 			<channel id="batterySoc" typeId="current_battery_soc"/>
 			<channel id="batteryStatus" typeId="current_battery_status"/>
 			<channel id="batteryWintermode" typeId="current_battery_wintermode_status"/>
-			
-            <channel id="currentPowerChargingToBattery" typeId="current_charging_power_battery"/>
-			<channel id="dailyBatteryCharge" typeId="daily_charging_power_battery" />
-            <channel id="monthlyBatteryCharge" typeId="monthly_charging_power_battery" />		
-            	
-            <channel id="currentPowerDischargingFromBattery" typeId="current_discharging_power_battery"/>	
-            <channel id="dailyPowerDischargingFromBattery" typeId="daily_discharging_power_battery"/>	
-            <channel id="monthlyPowerDischargingFromBattery" typeId="monthly_discharging_power_battery"/>	
-            	
-            	
-            <!-- load -->	
+
+			<channel id="currentPowerChargingToBattery" typeId="current_charging_power_battery"/>
+			<channel id="dailyBatteryCharge" typeId="daily_charging_power_battery"/>
+			<channel id="monthlyBatteryCharge" typeId="monthly_charging_power_battery"/>
+
+			<channel id="currentPowerDischargingFromBattery" typeId="current_discharging_power_battery"/>
+			<channel id="dailyPowerDischargingFromBattery" typeId="daily_discharging_power_battery"/>
+			<channel id="monthlyPowerDischargingFromBattery" typeId="monthly_discharging_power_battery"/>
+
+
+			<!-- load -->
 
 			<channel id="currentTotalPowerConsumption" typeId="current_power_consumption_total"/>
-            <channel id="dailyTotalPowerConsumption" typeId="daily_power_consumption_total"/>
-            <channel id="monthlyTotalPowerConsumption" typeId="monthly_power_consumption_total"/>
+			<channel id="dailyTotalPowerConsumption" typeId="daily_power_consumption_total"/>
+			<channel id="monthlyTotalPowerConsumption" typeId="monthly_power_consumption_total"/>
 
 			<channel id="currentDirectPowerConsumption" typeId="current_power_consumption_direct"/>
 			<channel id="dailyDirectPowerConsumption" typeId="daily_power_consumption_direct"/>
@@ -166,172 +166,172 @@
 		<description>Current power consumption from grid</description>
 		<state readOnly="true" pattern="%d %unit%"></state>
 	</channel-type>
-	
-    <channel-type id="daily_power_consumption_from_grid">
-        <item-type>Number:Energy</item-type>
-        <label>Consumption from grid (daily)</label>
-        <description>Total daily energy consumption</description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type> 	
-	
-    <channel-type id="monthly_power_consumption_from_grid">
-        <item-type>Number:Energy</item-type>
-        <label>Consumption from grid (monthly)</label>
-        <description>Total monthly energy consumption</description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type>	
-	
+
+	<channel-type id="daily_power_consumption_from_grid">
+		<item-type>Number:Energy</item-type>
+		<label>Consumption from grid (daily)</label>
+		<description>Total daily energy consumption</description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+
+	<channel-type id="monthly_power_consumption_from_grid">
+		<item-type>Number:Energy</item-type>
+		<label>Consumption from grid (monthly)</label>
+		<description>Total monthly energy consumption</description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+
 	<channel-type id="current_power_provided_to_grid">
 		<item-type>Number:Energy</item-type>
 		<label>Provided power to grid (current)</label>
 		<description>Current power provided to grid</description>
 		<state readOnly="true" pattern="%d Wh"></state>
 	</channel-type>
-    <channel-type id="daily_power_provided_to_grid">
-        <item-type>Number:Energy</item-type>
-        <label>Provided power to grid (daily)</label>
-        <description>Total daily energy provided</description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type>     
-    <channel-type id="monthly_power_provided_to_grid">
-        <item-type>Number:Energy</item-type>
-        <label>Provided power to grid (monthly)</label>
-        <description>Total monthly energy provided</description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type> 	
-    
-    <!--  PV -->
-    <channel-type id="current_power_provided_by_pv">
-        <item-type>Number:Energy</item-type>
-        <label>Production from PV (current)</label>
-        <description>Current production from PV</description>
-        <state readOnly="true" pattern="%d Wh"></state>
-    </channel-type>    
-    <channel-type id="daily_power_provided_by_pv">
-        <item-type>Number:Energy</item-type>
-        <label>Production from PV (daily)</label>
-        <description>Total daily energy production</description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type> 
-    <channel-type id="monthly_power_provided_by_pv">
-        <item-type>Number:Energy</item-type>
-        <label>Production from PV (monthly)</label>
-        <description>Total monthly energy production</description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type>     
-    
-	<!--  battery -->
-    <channel-type id="current_battery_soc">
-        <item-type>Number</item-type>
-        <label>Current SOC state</label>
-        <description>Current battery level in [%]</description>
-        <state readOnly="true" pattern="%d %%"></state>
-    </channel-type>
+	<channel-type id="daily_power_provided_to_grid">
+		<item-type>Number:Energy</item-type>
+		<label>Provided power to grid (daily)</label>
+		<description>Total daily energy provided</description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+	<channel-type id="monthly_power_provided_to_grid">
+		<item-type>Number:Energy</item-type>
+		<label>Provided power to grid (monthly)</label>
+		<description>Total monthly energy provided</description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
 
-    <channel-type id="current_battery_status"> <!-- status 0 = idle; 2 = discharge -->
-        <item-type>String</item-type>
-        <label>Status battery operating mode</label>
-        <description>Current battery status</description>
-        <state readOnly="true">
-            <options>
-                <option value="0">idle</option>
-                <option value="1">charging</option>
-                <option value="2">discharging</option>
-            </options>        
-        </state>
-    </channel-type>
+	<!-- PV -->
+	<channel-type id="current_power_provided_by_pv">
+		<item-type>Number:Energy</item-type>
+		<label>Production from PV (current)</label>
+		<description>Current production from PV</description>
+		<state readOnly="true" pattern="%d Wh"></state>
+	</channel-type>
+	<channel-type id="daily_power_provided_by_pv">
+		<item-type>Number:Energy</item-type>
+		<label>Production from PV (daily)</label>
+		<description>Total daily energy production</description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+	<channel-type id="monthly_power_provided_by_pv">
+		<item-type>Number:Energy</item-type>
+		<label>Production from PV (monthly)</label>
+		<description>Total monthly energy production</description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
 
-    <channel-type id="current_battery_wintermode_status"> <!-- status 0 = idle; 2 = discharge -->
-        <item-type>Switch</item-type>
-        <label>Status Wintermode</label>
-        <description>Current status of wintermode</description>
-        <state readOnly="true"></state>
-    </channel-type>	
-	
-    <channel-type id="current_charging_power_battery">
-        <item-type>Number:Energy</item-type>
-        <label>Charging power battery (current)</label>
-        <description>Current charging power of battery </description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type>	
-	
-    <channel-type id="daily_charging_power_battery">
-        <item-type>Number:Energy</item-type>
-        <label>Charging power battery (daily)</label>
-        <description>Daily charging power of battery </description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type>	
-	
-    <channel-type id="monthly_charging_power_battery">
-        <item-type>Number:Energy</item-type>
-        <label>Charging power battery (monthly)</label>
-        <description>Monthly charging power of battery </description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type> 	
-	
-    <channel-type id="current_discharging_power_battery">
-        <item-type>Number:Energy</item-type>
-        <label>Discharging power from battery (current)</label>
-        <description>Current power provided by battery </description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type>	
-    <channel-type id="daily_discharging_power_battery">
-        <item-type>Number:Energy</item-type>
-        <label>Discharging power from battery (daily)</label>
-        <description>Current power provided by battery </description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type> 	
-    <channel-type id="monthly_discharging_power_battery">
-        <item-type>Number:Energy</item-type>
-        <label>Discharging power from battery (monthly)</label>
-        <description>Current power provided by battery </description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type> 	
-	
-	<!--  load -->
-    <channel-type id="current_power_consumption_total">
-        <item-type>Number:Energy</item-type>
-        <label>Consumption total (current)</label>
-        <description>Current total consumption</description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type>
-    <channel-type id="daily_power_consumption_total">
-        <item-type>Number:Energy</item-type>
-        <label>Consumption total (daily)</label>
-        <description>Daily total consumption</description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type>	
-    <channel-type id="monthly_power_consumption_total">
-        <item-type>Number:Energy</item-type>
-        <label>Consumption total (monthly)</label>
-        <description>Monthly total consumption</description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type>	
-	
-    <channel-type id="current_power_consumption_direct">
-        <item-type>Number:Energy</item-type>
-        <label>Consumption directly from PV (current)</label>
-        <description>Current direct consumption from PV</description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type>	
-    <channel-type id="daily_power_consumption_direct">
-        <item-type>Number:Energy</item-type>
-        <label>Consumption directly from PV (daily)</label>
-        <description>Daily direct consumption from PV</description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type> 
-    <channel-type id="monthly_power_consumption_direct">
-        <item-type>Number:Energy</item-type>
-        <label>Consumption directly from PV (monthly)</label>
-        <description>Monthly direct consumption from PV</description>
-        <state readOnly="true" pattern="%.1f kWh"></state>
-    </channel-type> 
+	<!-- battery -->
+	<channel-type id="current_battery_soc">
+		<item-type>Number</item-type>
+		<label>Current SOC state</label>
+		<description>Current battery level in [%]</description>
+		<state readOnly="true" pattern="%d %%"></state>
+	</channel-type>
 
-	
-	
-	
-	
-	
+	<channel-type id="current_battery_status"> <!-- status 0 = idle; 2 = discharge -->
+		<item-type>String</item-type>
+		<label>Status battery operating mode</label>
+		<description>Current battery status</description>
+		<state readOnly="true">
+			<options>
+				<option value="0">idle</option>
+				<option value="1">charging</option>
+				<option value="2">discharging</option>
+			</options>
+		</state>
+	</channel-type>
+
+	<channel-type id="current_battery_wintermode_status"> <!-- status 0 = idle; 2 = discharge -->
+		<item-type>Switch</item-type>
+		<label>Status Wintermode</label>
+		<description>Current status of wintermode</description>
+		<state readOnly="true"></state>
+	</channel-type>
+
+	<channel-type id="current_charging_power_battery">
+		<item-type>Number:Energy</item-type>
+		<label>Charging power battery (current)</label>
+		<description>Current charging power of battery </description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+
+	<channel-type id="daily_charging_power_battery">
+		<item-type>Number:Energy</item-type>
+		<label>Charging power battery (daily)</label>
+		<description>Daily charging power of battery </description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+
+	<channel-type id="monthly_charging_power_battery">
+		<item-type>Number:Energy</item-type>
+		<label>Charging power battery (monthly)</label>
+		<description>Monthly charging power of battery </description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+
+	<channel-type id="current_discharging_power_battery">
+		<item-type>Number:Energy</item-type>
+		<label>Discharging power from battery (current)</label>
+		<description>Current power provided by battery </description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+	<channel-type id="daily_discharging_power_battery">
+		<item-type>Number:Energy</item-type>
+		<label>Discharging power from battery (daily)</label>
+		<description>Current power provided by battery </description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+	<channel-type id="monthly_discharging_power_battery">
+		<item-type>Number:Energy</item-type>
+		<label>Discharging power from battery (monthly)</label>
+		<description>Current power provided by battery </description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+
+	<!-- load -->
+	<channel-type id="current_power_consumption_total">
+		<item-type>Number:Energy</item-type>
+		<label>Consumption total (current)</label>
+		<description>Current total consumption</description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+	<channel-type id="daily_power_consumption_total">
+		<item-type>Number:Energy</item-type>
+		<label>Consumption total (daily)</label>
+		<description>Daily total consumption</description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+	<channel-type id="monthly_power_consumption_total">
+		<item-type>Number:Energy</item-type>
+		<label>Consumption total (monthly)</label>
+		<description>Monthly total consumption</description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+
+	<channel-type id="current_power_consumption_direct">
+		<item-type>Number:Energy</item-type>
+		<label>Consumption directly from PV (current)</label>
+		<description>Current direct consumption from PV</description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+	<channel-type id="daily_power_consumption_direct">
+		<item-type>Number:Energy</item-type>
+		<label>Consumption directly from PV (daily)</label>
+		<description>Daily direct consumption from PV</description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+	<channel-type id="monthly_power_consumption_direct">
+		<item-type>Number:Energy</item-type>
+		<label>Consumption directly from PV (monthly)</label>
+		<description>Monthly direct consumption from PV</description>
+		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+
+
+
+
+
+
 
 
 
@@ -402,20 +402,20 @@
 		<description>Monthly earnings by sold power from PV [EUR]</description>
 		<state readOnly="true" pattern="%.2f EUR"></state>
 	</channel-type>
-	
-    <channel-type id="monthlyMoneySavings">
-        <item-type>Number</item-type>
-        <label>Monthly savings</label>
-        <description>Monthly savings by consuming and selling power from PV [EUR]</description>
-        <state readOnly="true" pattern="%.2f EUR"></state>
-    </channel-type>	
 
-
-	
-    	
+	<channel-type id="monthlyMoneySavings">
+		<item-type>Number</item-type>
+		<label>Monthly savings</label>
+		<description>Monthly savings by consuming and selling power from PV [EUR]</description>
+		<state readOnly="true" pattern="%.2f EUR"></state>
+	</channel-type>
 
 
 
-	
+
+
+
+
+
 
 </thing:thing-descriptions>

@@ -18,7 +18,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Auto generated class
+ * The {@link Statistics} is an auto generated DTO
  *
  * @author Martin Klama - Initial contribution
  *
