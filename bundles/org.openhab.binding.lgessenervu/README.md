@@ -1,4 +1,3 @@
-
 # LGEssEnervu Binding
 This binding is meant to retrieve data of the LG Ess Powerrouter/Battery bundle.
 It is designed to retrieve data either from the lg cloud (https://enervu.lg-ess.com) or via WLAN directly from the local device.
@@ -31,7 +30,7 @@ Once you are connected to the wifi of your device send a json request to
 | Parameter            |              Type                 | Required/Optional | Group        |Description|
 |---------------------|---------------------------|----------------------------|--------|--|
 |dataSourceCloud|boolean|required|general |Select the datasource where to retrieve data from
-|timeout|integer|optional|general|dunno
+|timeout|integer|optional|general|The timeout in seconds
 |kwhPrice|decimal|optional|general| Price of the kWh paid to local provider
 |kwhPriceSell|decimal|optional|general| Price local provider pays for selling power
 |co2Factor|decimal|optional| general | Factor of the powermix (e.g. 0.71 of bought power is from green energy
