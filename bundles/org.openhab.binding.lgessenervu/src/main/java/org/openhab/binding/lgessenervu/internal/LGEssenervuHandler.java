@@ -89,7 +89,6 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
     public void handleCommand(ChannelUID channelUID, Command command) {
 
         if (command instanceof RefreshType) {
-            logger.warn("refresh called!");
             scheduler.execute(() -> {
                 if (lgessClient.getLoginStatus()) {
                     lgessClient.getCurrentData();
@@ -188,14 +187,12 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
 
             ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(sjob, 0, refreshInterval, TimeUnit.SECONDS);
             scheduledFutures.add(future);
-            logger.warn("Scheduled {} every {} seconds", "status job", refreshInterval);
 
             FifteenMinJob runnable = new FifteenMinJob(lgessClient);
             if (null != cronscheduler) {
                 fifteenminJob = cronscheduler.schedule(runnable, CRON_15MIN);
                 runnable.run();
             }
-            logger.debug("Scheduled {} every 15min", fifteenminJob);
 
         } catch (Exception ex) {
             logger.error("{}", ex.getMessage(), ex);
@@ -256,7 +253,7 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
                     lgessClient.Login();
 
                 }
-            }, 60, TimeUnit.SECONDS);
+            }, LGEssEnervuBindingConstants.RECONNECT_DELAY, TimeUnit.SECONDS);
 
         } else {
             updateStatus(ThingStatus.ONLINE);
@@ -289,8 +286,7 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
                 } else if (value instanceof Double) {
                     updateState(channelUID, new DecimalType((double) value));
                 } else {
-
-                    logger.warn("unable to publish {} since type is {}", channelUID, value.getClass());
+                    logger.error("unable to publish {} since type is {}", channelUID, value.getClass());
                 }
 
             } catch (Exception ex) {
@@ -319,7 +315,6 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
             stopPolling();
             return;
         }
-        logger.warn("handler callback called! with {}", responseData);
 
         // grid
         Channel chan_current_pwr_from_grid = getThing().getChannel(CHANNEL_CURRENT_POWER_FROM_GRID);
@@ -462,8 +457,6 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
             stopPolling();
             return;
         }
-
-        logger.warn("handler callback called! with {}", responseData);
 
         Channel chan_daily_consumption_from_grid = getThing().getChannel(CHANNEL_DAILY_POWER_FROM_GRID);
         Channel chan_monthly_consumption_from_grid = getThing().getChannel(CHANNEL_MONTHLY_POWER_FROM_GRID);
@@ -644,6 +637,8 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
             case NONE:
                 break;
             case WRONG_CREDENTIALS:
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
+                        "login failed. please check your credentials!");
                 break;
             default:
                 break;

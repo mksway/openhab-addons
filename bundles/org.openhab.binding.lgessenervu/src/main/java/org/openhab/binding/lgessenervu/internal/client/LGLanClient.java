@@ -125,8 +125,6 @@ public class LGLanClient extends LGEssClient {
     @Override
     public void getCurrentData() {
 
-        logger.warn("DATA FROM LAN");
-
         String jsonresp_common = performRequest(createEndpoint(endpoint_common), HttpMethod.POST,
                 String.format(json_req_body, sessionid));
 

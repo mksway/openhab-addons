@@ -19,7 +19,7 @@ import org.openhab.binding.lgessenervu.internal.LGEssEnervuBindingConstants.Fail
  * The {@link ResponseCallback} interface is responsible for handling commands, which are
  * sent to one of the channels.
  *
- * @author SkyRaVeR - Initial contribution
+ * @author Martin Klama - Initial contribution
  */
 @NonNullByDefault
 public interface IResponseCallback {

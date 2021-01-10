@@ -18,7 +18,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * The {@link MonthResult} is a DTO with data from the cloud
  *
- * @author SkyRaVeR - initial contribution
+ * @author Martin Klama - initial contribution
  */
 public class MonthResult {
 

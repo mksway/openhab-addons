@@ -6,8 +6,8 @@
 
 
 	<thing-type id="powerrouter">
-		<label>lgessenervu Binding Thing</label>
-		<description>Sample thing for lgessenervu Binding</description>
+		<label>LGEssEnervu Binding Thing</label>
+		<description>Binding for LG Ess Enervu powerrouter/batteries</description>
 
 		<channels>
 			<!-- grid -->
@@ -134,18 +134,15 @@
 				<context>password</context>
 				<label>Password</label>
 				<description>Password of the local device (see doc on how to get password))</description>
-				<default></default>
 			</parameter>
 
 			<parameter name="user" type="text" required="false" groupName="cloud">
 				<label>Username / eMail</label>
 				<description>Username for the login @ https://enervu.lg-ess.com/ </description>
-				<default></default>
 			</parameter>
 			<parameter name="passwordCloud" type="text" required="false" groupName="cloud">
 				<context>password</context>
 				<label>Password</label>
-				<default>AnnaB3ll2809</default>
 				<description>The Password used for the login @ https://enervu.lg-ess.com/</description>
 			</parameter>
 			<parameter name="refreshIntervalCloud" type="integer" required="false" min="60" unit="s" groupName="cloud">
@@ -327,24 +324,6 @@
 		<state readOnly="true" pattern="%.1f kWh"></state>
 	</channel-type>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	<channel-type id="isDirectConsuming">
 		<item-type>Switch</item-type>
 		<label>Status direct consumption</label>
@@ -409,13 +388,5 @@
 		<description>Monthly savings by consuming and selling power from PV [EUR]</description>
 		<state readOnly="true" pattern="%.2f EUR"></state>
 	</channel-type>
-
-
-
-
-
-
-
-
 
 </thing:thing-descriptions>

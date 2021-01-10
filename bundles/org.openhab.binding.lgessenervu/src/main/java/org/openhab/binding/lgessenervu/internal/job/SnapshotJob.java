@@ -17,10 +17,9 @@ import org.openhab.binding.lgessenervu.internal.client.LGEssClient;
 import org.openhab.core.scheduler.SchedulerRunnable;
 
 /**
- * The {@link LGESSEnervuHandler} is responsible for handling commands, which are
- * sent to one of the channels.
+ * The {@link SnapshotJob} retrieves current data every x seconds from either the cloud or the lan
  *
- * @author SkyRaVeR - Initial contribution
+ * @author Martin Klama - Initial contribution
  */
 @NonNullByDefault
 public class SnapshotJob implements SchedulerRunnable, Runnable {

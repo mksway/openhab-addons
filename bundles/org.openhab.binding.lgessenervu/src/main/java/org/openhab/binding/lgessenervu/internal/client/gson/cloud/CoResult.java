@@ -20,7 +20,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * The {@link CoResult} is an auto generated DTO
  *
- * @author SkyRaVeR - initial contribution
+ * @author Martin Klama - initial contribution
  */
 @NonNullByDefault
 public class CoResult {

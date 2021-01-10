@@ -20,7 +20,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * The {@link Snapshot} is an auto generated DTO
  *
- * @author SkyRaVeR - Initial contribution
+ * @author Martin Klama - Initial contribution
  */
 
 public class Snapshot {

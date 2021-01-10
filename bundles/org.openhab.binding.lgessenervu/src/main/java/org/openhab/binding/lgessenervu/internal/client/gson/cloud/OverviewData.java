@@ -18,7 +18,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * The {@link OverviewData} is an auto generated DTO
  *
- * @author SkyRaVeR - initial contribution
+ * @author Martin Klama - initial contribution
  */
 public class OverviewData {
 

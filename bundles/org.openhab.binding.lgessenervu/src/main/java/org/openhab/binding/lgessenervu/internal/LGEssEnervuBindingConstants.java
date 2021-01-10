@@ -33,6 +33,8 @@ public class LGEssEnervuBindingConstants {
 
     public static final String LG_API_V1_APPKEY = "6V1V8H2BN5P9ZQGOI5DAQ92YZBDO3EK9";
 
+    public static final int RECONNECT_DELAY = 60; // seconds
+
     public static enum DataSource {
         NONE,
         CLOUD_API_V1,

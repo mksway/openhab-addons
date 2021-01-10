@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * The {@link LGCloudClient} is responsible for retrieving data from the lg ess enervu cloud
  * which will be accessed via https://enervu.lg-ess.com
  *
- * @author SkyRaVeR - initial contribution
+ * @author Martin Klama - initial contribution
  */
 @NonNullByDefault
 public class LGCloudClient extends LGEssClient {
@@ -335,8 +335,6 @@ public class LGCloudClient extends LGEssClient {
     @Override
     public void getCurrentData() {
 
-        logger.debug("DATA FROM CLOUD");
-
         @Nullable
         Snapshot data = null;
         ResponseData responseData = null;
@@ -400,7 +398,6 @@ public class LGCloudClient extends LGEssClient {
         String jsonresp = "";
         ContentResponse res = null;
 
-        logger.debug("get15MinSOverview called with {}", getLoginStatus());
         if (false == getLoginStatus()) {
             return;
         }

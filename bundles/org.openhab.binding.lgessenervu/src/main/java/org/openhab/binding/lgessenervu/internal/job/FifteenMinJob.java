@@ -18,10 +18,10 @@ import org.openhab.binding.lgessenervu.internal.client.LGEssClient;
 import org.openhab.core.scheduler.SchedulerRunnable;
 
 /**
- * The {@link FifteenMinJob} is responsible for handling commands, which are
- * sent to one of the channels.
+ * The {@link FifteenMinJob} is scheduled every 15 minutes and retrieves accumulated data like day/monthly stats from
+ * the cloud.
  *
- * @author SkyRaVeR - Initial contribution
+ * @author Martin Klama - Initial contribution
  */
 @NonNullByDefault
 public class FifteenMinJob implements SchedulerRunnable, Runnable {

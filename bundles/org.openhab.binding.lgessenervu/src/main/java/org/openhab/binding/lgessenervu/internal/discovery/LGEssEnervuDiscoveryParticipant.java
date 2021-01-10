@@ -33,8 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The {@link LGEssEnervuBindingConstants} class defines common constants, which are
- * used across the whole binding.
+ * The {@link LGEssEnervuDiscoveryParticipant} is responsible for discovering devices via mdns
+ * on the local network
  *
  * @author Martin Klama - Initial contribution
  */
@@ -58,7 +58,7 @@ public class LGEssEnervuDiscoveryParticipant implements MDNSDiscoveryParticipant
     public @Nullable DiscoveryResult createResult(ServiceInfo info) {
         logger.debug("ServiceInfo {}", info);
         String ipAddress = getIPAddress(info);
-        if (ipAddress != null) { // && isEnigma2Device(ipAddress)
+        if (ipAddress != null && isLGEssEnervuDevice(info.getName())) {
             logger.debug("LGEss device discovered: IP-Adress={}, name={}", ipAddress, info.getName());
             ThingUID uid = getThingUID(info);
             if (uid != null) {
@@ -71,15 +71,13 @@ public class LGEssEnervuDiscoveryParticipant implements MDNSDiscoveryParticipant
         return null;
     }
 
-    private boolean isEnigma2Device(String ipAddress) {
-        /*
-         * try {
-         * return getEnigma2HttpClient().get("http://" + ipAddress + "/web/about").contains("e2enigmaversion");
-         * } catch (IOException ignore) {
-         * return false;
-         * }
-         */
-        return true;
+    private boolean isLGEssEnervuDevice(String name) {
+
+        if (name.toUpperCase().startsWith("LGE_ESS")) {
+            return true;
+        }
+
+        return false;
     }
 
     private @Nullable String getIPAddress(ServiceInfo info) {
