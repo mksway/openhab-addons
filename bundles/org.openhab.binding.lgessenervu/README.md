@@ -37,8 +37,8 @@ Once you are connected to the wifi of your device send a json request to
 |refreshInterval | integer |local | local | How often shall data be polled (in seconds)
 |hostName | string | required if source is lan |local| hostname/ip of local device
 |passwordLocal | text | required if source is lan | local | password of the local device
-|user | text | required if source is cloud | local |username / email used for login at https://enervu.lg-ess.com
-|passwordCloud | text| cloud |required if source is cloud|password used for login at https://enervu.lg-ess.com
+|user | text | required if source is cloud | cloud |username / email used for login at https://enervu.lg-ess.com
+|passwordCloud | text| required if source is cloud|cloud|password used for login at https://enervu.lg-ess.com
 |refreshIntervalCloud | integer |local | local | How often shall data be polled (in seconds)
 
 
