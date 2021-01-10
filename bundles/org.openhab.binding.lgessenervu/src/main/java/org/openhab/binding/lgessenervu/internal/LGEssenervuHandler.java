@@ -165,7 +165,6 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
 
     @Override
     public void dispose() {
-        logger.debug("dispose called");
         lgessClient.unregisterCallback();
         stopPolling();
         super.dispose();
@@ -173,7 +172,6 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
 
     @Override
     public void handleRemoval() {
-        logger.debug("removal called");
         lgessClient.unregisterCallback();
         stopPolling();
         super.handleRemoval();
@@ -188,12 +186,14 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
             ScheduledFuture<?> future = scheduler.scheduleWithFixedDelay(sjob, 0, refreshInterval, TimeUnit.SECONDS);
             scheduledFutures.add(future);
 
-            FifteenMinJob runnable = new FifteenMinJob(lgessClient);
-            if (null != cronscheduler) {
-                fifteenminJob = cronscheduler.schedule(runnable, CRON_15MIN);
-                runnable.run();
-            }
+            if (true == getConfigAs(LGEssenervuConfiguration.class).dataSourceCloud) {
 
+                FifteenMinJob runnable = new FifteenMinJob(lgessClient);
+                if (null != cronscheduler) {
+                    fifteenminJob = cronscheduler.schedule(runnable, CRON_15MIN);
+                    runnable.run();
+                }
+            }
         } catch (Exception ex) {
             logger.error("{}", ex.getMessage(), ex);
         } finally {

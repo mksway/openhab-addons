@@ -33,7 +33,7 @@ Once you are connected to the wifi of your device send a json request to
 |timeout|integer|optional|general|The timeout in seconds
 |kwhPrice|decimal|optional|general| Price of the kWh paid to local provider
 |kwhPriceSell|decimal|optional|general| Price local provider pays for selling power
-|co2Factor|decimal|optional| general | Factor of the powermix (e.g. 0.71 of bought power is from green energy
+|co2Factor|decimal|optional| general | Factor of the powermix (e.g. 0.71% of bought power is from green energy
 |refreshInterval | integer |local | local | How often shall data be polled (in seconds)
 |hostName | string | required if source is lan |local| hostname/ip of local device
 |passwordLocal | text | required if source is lan | local | password of the local device
