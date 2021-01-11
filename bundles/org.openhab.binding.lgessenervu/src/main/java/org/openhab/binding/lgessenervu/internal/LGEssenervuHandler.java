@@ -629,6 +629,8 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
     public void responseCallbackError(FailReason reason) {
         switch (reason) {
             case COMMUNICATION_ERROR:
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                        "Check network connection please.");
                 break;
             case CRITICAL:
                 stopPolling();
@@ -638,7 +640,7 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
                 break;
             case WRONG_CREDENTIALS:
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
-                        "login failed. please check your credentials!");
+                        "Login failed. please check your credentials!");
                 break;
             default:
                 break;
