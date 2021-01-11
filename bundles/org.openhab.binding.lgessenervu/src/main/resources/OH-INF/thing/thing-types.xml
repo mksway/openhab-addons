@@ -161,7 +161,7 @@
 		<item-type>Number:Energy</item-type>
 		<label>Consumption from grid (current)</label>
 		<description>Current power consumption from grid</description>
-		<state readOnly="true" pattern="%d %unit%"></state>
+		<state readOnly="true" pattern="%.1f kWh"></state>
 	</channel-type>
 
 	<channel-type id="daily_power_consumption_from_grid">
@@ -182,7 +182,7 @@
 		<item-type>Number:Energy</item-type>
 		<label>Provided power to grid (current)</label>
 		<description>Current power provided to grid</description>
-		<state readOnly="true" pattern="%d kWh"></state>
+		<state readOnly="true" pattern=".1f kWh"></state>
 	</channel-type>
 	<channel-type id="daily_power_provided_to_grid">
 		<item-type>Number:Energy</item-type>
