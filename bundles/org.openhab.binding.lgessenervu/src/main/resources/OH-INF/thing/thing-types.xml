@@ -6,7 +6,7 @@
 
 
 	<thing-type id="powerrouter">
-		<label>LGEssEnervu Binding Thing</label>
+		<label>LGEssEnervu Powerrouter thing</label>
 		<description>Binding for LG Ess Enervu powerrouter/batteries</description>
 
 		<channels>
@@ -14,64 +14,44 @@
 			<channel id="currentPowerFromGrid" typeId="current_power_consumption_from_grid"/>
 			<channel id="dailyPowerFromGrid" typeId="daily_power_consumption_from_grid"/>
 			<channel id="monthlyPowerFromGrid" typeId="monthly_power_consumption_from_grid"/>
-
 			<channel id="currentPowerToGrid" typeId="current_power_provided_to_grid"/>
 			<channel id="dailyPowerToGrid" typeId="daily_power_provided_to_grid"/>
 			<channel id="monthlyPowerToGrid" typeId="monthly_power_provided_to_grid"/>
-
 			<!-- PV -->
-
 			<channel id="currentPowerFromPV" typeId="current_power_provided_by_pv"/>
 			<channel id="dailyPowerFromPV" typeId="daily_power_provided_by_pv"/>
 			<channel id="monthlyPowerFromPV" typeId="monthly_power_provided_by_pv"/>
-
-
 			<!-- battery -->
 			<channel id="batterySoc" typeId="current_battery_soc"/>
 			<channel id="batteryStatus" typeId="current_battery_status"/>
 			<channel id="batteryWintermode" typeId="current_battery_wintermode_status"/>
-
 			<channel id="currentPowerChargingToBattery" typeId="current_charging_power_battery"/>
 			<channel id="dailyBatteryCharge" typeId="daily_charging_power_battery"/>
 			<channel id="monthlyBatteryCharge" typeId="monthly_charging_power_battery"/>
-
 			<channel id="currentPowerDischargingFromBattery" typeId="current_discharging_power_battery"/>
 			<channel id="dailyPowerDischargingFromBattery" typeId="daily_discharging_power_battery"/>
 			<channel id="monthlyPowerDischargingFromBattery" typeId="monthly_discharging_power_battery"/>
-
-
 			<!-- load -->
-
 			<channel id="currentTotalPowerConsumption" typeId="current_power_consumption_total"/>
 			<channel id="dailyTotalPowerConsumption" typeId="daily_power_consumption_total"/>
 			<channel id="monthlyTotalPowerConsumption" typeId="monthly_power_consumption_total"/>
-
 			<channel id="currentDirectPowerConsumption" typeId="current_power_consumption_direct"/>
 			<channel id="dailyDirectPowerConsumption" typeId="daily_power_consumption_direct"/>
 			<channel id="monthlyDirectPowerConsumption" typeId="monthly_power_consumption_direct"/>
-
-
-
 			<!-- status -->
-
 			<channel id="isDirectConsuming" typeId="isDirectConsuming"/>
 			<channel id="isBatteryCharging" typeId="isBatteryCharging"/>
 			<channel id="isBatteryDischarging" typeId="isBatteryDischarging"/>
 			<channel id="isGridSelling" typeId="isGridSelling"/>
 			<channel id="isGridBuying" typeId="isGridBuying"/>
 			<channel id="isChargingFromGrid" typeId="isChargingFromGrid"/>
-
-
-
 			<channel id="monthlyCO2Savings" typeId="monthlyCO2Saving"/>
 			<channel id="monthlyEarnings" typeId="monthlyEarnings"/>
 			<channel id="monthlyPaid" typeId="monthlyPaid"/>
 			<channel id="monthlyMoneySavings" typeId="monthlyMoneySavings"/>
-
 		</channels>
 
 		<config-description>
-
 			<parameter-group name="general">
 				<label>General</label>
 				<description>General parameters</description>
@@ -90,8 +70,6 @@
 				<context>String</context>
 				<advanced>false</advanced>
 			</parameter-group>
-
-
 			<parameter name="dataSourceCloud" type="boolean" groupName="general">
 				<label>Use Cloud API</label>
 				<description>If "cloud" is selected data will be collected from https://enervu.lg-ess.com/</description>
@@ -118,7 +96,6 @@
 				<description>Factor of powermix used for calculation of CO2 savings</description>
 				<default>0.71</default>
 			</parameter>
-
 			<parameter name="refreshInterval" type="integer" required="false" min="1" unit="s" groupName="local">
 				<label>Refresh Interval</label>
 				<description>The refresh interval in seconds.</description>
@@ -135,7 +112,6 @@
 				<label>Password</label>
 				<description>Password of the local device (see doc on how to get password))</description>
 			</parameter>
-
 			<parameter name="user" type="text" required="false" groupName="cloud">
 				<label>Username / eMail</label>
 				<description>Username for the login @ https://enervu.lg-ess.com/ </description>
@@ -150,9 +126,6 @@
 				<description>The refresh interval in seconds.</description>
 				<default>60</default>
 			</parameter>
-
-
-
 		</config-description>
 
 	</thing-type>
