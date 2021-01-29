@@ -55,30 +55,30 @@ _Note that it is planned to generate some part of this based on the XML files wi
 
 | channel  | type   | description                  |
 |----------|--------|------------------------------|
-| currentPowerFromGrid| Number:Energy| Current power taken from grid  |
-| dailyPowerFromGrid| Number:Energy| Daily power taken from grid |
-| monthlyPowerFromGrid| Number:Energy| Monthly power taken from grid  |
-| currentPowerToGrid| Number:Energy| Current power provided to grid  |
-| dailyPowerToGrid| Number:Energy| Daily power provided to grid  |
-| monthlyPowerToGrid| Number:Energy| Monthly power provided to grid   |
-| currentPowerFromPV| Number:Energy| Current power produced by PV  |
-| dailyPowerFromPV| Number:Energy| Daily power produced by PV  |
-| monthlyPowerFromPV| Number:Energy| Monthly power produced by PV |
-| batterySoc| Number:Energy| Current battery SOC state  |
+| currentPowerFromGrid| Number:Power| Current power taken from grid  |
+| dailyPowerFromGrid| Number:Power| Daily power taken from grid |
+| monthlyPowerFromGrid| Number:Power| Monthly power taken from grid  |
+| currentPowerToGrid| Number:Power| Current power provided to grid  |
+| dailyPowerToGrid| Number:Power| Daily power provided to grid  |
+| monthlyPowerToGrid| Number:Power| Monthly power provided to grid   |
+| currentPowerFromPV| Number:Power| Current power produced by PV  |
+| dailyPowerFromPV| Number:Power| Daily power produced by PV  |
+| monthlyPowerFromPV| Number:Power| Monthly power produced by PV |
+| batterySoc| Number:Power| Current battery SOC state  |
 | batteryStatus| String | Current battery operating mode (idle, charging,discharging)  |
 | batteryWintermode| Switch| Status of wintermode  |
-| currentPowerChargingToBattery| Number:Energy| Current power used to charge the battery  |
-| dailyBatteryCharge| Number:Energy| Daily power used to charge the battery |
-| monthlyBatteryCharge| Number:Energy| Monthly power used to charge the battery  |
-| currentPowerDischargingFromBattery| Number:Energy| Current power used to discharge the battery   |
-| dailyPowerDischargingFromBattery| Number:Energy| Daily power used to discharge the battery  |
-| monthlyPowerDischargingFromBattery| Number:Energy| Monthly power used to discharge the battery  |
-| currentTotalPowerConsumption| Number:Energy| Current total power consumption (grid+battery+pv) |
-| dailyTotalPowerConsumption| Number:Energy| Daily total power consumption (grid+battery+pv)  |
-| monthlyTotalPowerConsumption| Number:Energy| Monthly total power consumption (grid+battery+pv)  |
-| currentDirectPowerConsumption| Number:Energy| Current direct power consumption from PV  |
-| dailyDirectPowerConsumption| Number:Energy| Daily direct power consumption from PV  |
-| monthlyDirectPowerConsumption| Number:Energy| Monthly direct power consumption from PV  |
+| currentPowerChargingToBattery| Number:Power| Current power used to charge the battery  |
+| dailyBatteryCharge| Number:Power| Daily power used to charge the battery |
+| monthlyBatteryCharge| Number:Power| Monthly power used to charge the battery  |
+| currentPowerDischargingFromBattery| Number:Power| Current power used to discharge the battery   |
+| dailyPowerDischargingFromBattery| Number:Power| Daily power used to discharge the battery  |
+| monthlyPowerDischargingFromBattery| Number:Power| Monthly power used to discharge the battery  |
+| currentTotalPowerConsumption| Number:Power| Current total power consumption (grid+battery+pv) |
+| dailyTotalPowerConsumption| Number:Power| Daily total power consumption (grid+battery+pv)  |
+| monthlyTotalPowerConsumption| Number:Power| Monthly total power consumption (grid+battery+pv)  |
+| currentDirectPowerConsumption| Number:Power| Current direct power consumption from PV  |
+| dailyDirectPowerConsumption| Number:Power| Daily direct power consumption from PV  |
+| monthlyDirectPowerConsumption| Number:Power| Monthly direct power consumption from PV  |
 | isDirectConsuming| Switch | Is PV power currently directly consumed?  |
 | isBatteryCharging| Switch | Is the battery currently charging?  |
 | isBatteryDischarging| Switch | Is the battery currently discharging?  |
