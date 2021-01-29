@@ -345,21 +345,27 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
 
         if (chan_current_pwr_from_grid != null) {
             publishChannelIfLinked(chan_current_pwr_from_grid.getUID(), new QuantityType<>(
-                    getNumericValueOfString(responseData.getCommon().getGRID().getActivePower()), Units.WATT_HOUR));
+                    getNumericValueOfString(responseData.getCommon().getGRID().getActivePower()), Units.WATT));
 
         }
         if (chan_current_pwr_to_grid != null) {
             if (responseData.getStats().getDirection().getIsGridSelling().equals("1")) {
                 publishChannelIfLinked(chan_current_pwr_to_grid.getUID(), new QuantityType<>(
-                        getNumericValueOfString(responseData.getCommon().getGRID().getActivePower()), Units.WATT_HOUR));
+                        getNumericValueOfString(responseData.getCommon().getGRID().getActivePower()), Units.WATT));
             } else {
-                publishChannelIfLinked(chan_current_pwr_to_grid.getUID(), new QuantityType<>(0.0, Units.WATT_HOUR));
+                publishChannelIfLinked(chan_current_pwr_to_grid.getUID(), new QuantityType<>(0.0, Units.WATT));
             }
 
         }
         if (chan_current_pwr_from_pv != null) {
-            publishChannelIfLinked(chan_current_pwr_from_pv.getUID(), new QuantityType<>(
-                    getNumericValueOfString(responseData.getCommon().getPV().getPv1Power()), Units.WATT_HOUR));
+            // take all 5 strings into account
+            int allstrings = getNumericValueOfString(responseData.getCommon().getPV().getPv1Power());
+            allstrings += getNumericValueOfString(responseData.getCommon().getPV().getPv2Power());
+            allstrings += getNumericValueOfString(responseData.getCommon().getPV().getPv3Power());
+            allstrings += getNumericValueOfString(responseData.getCommon().getPV().getPv4Power());
+            allstrings += getNumericValueOfString(responseData.getCommon().getPV().getPv5Power());
+
+            publishChannelIfLinked(chan_current_pwr_from_pv.getUID(), new QuantityType<>(allstrings, Units.WATT));
         }
         if (chan_current_battery_soc != null) {
             publishChannelIfLinked(chan_current_battery_soc.getUID(), new QuantityType<>(
@@ -375,7 +381,7 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
         }
         if (chan_current_total_power_consumption != null) {
             publishChannelIfLinked(chan_current_total_power_consumption.getUID(), new QuantityType<>(
-                    getNumericValueOfString(responseData.getCommon().getLOAD().getLoadPower()), Units.WATT_HOUR));
+                    getNumericValueOfString(responseData.getCommon().getLOAD().getLoadPower()), Units.WATT));
         }
 
         // calculated channels
@@ -393,34 +399,30 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
 
             }
             publishChannelIfLinked(chan_current_direct_power_consumption.getUID(),
-                    new QuantityType<>(directpow, Units.WATT_HOUR));
+                    new QuantityType<>(directpow, Units.WATT));
         }
 
         if (null != chan_current_battery_power_charge && null != chan_current_battery_power_discharge
                 && responseData.getStats().getDirection().getIsBatteryCharging().equals("0")
                 && responseData.getStats().getDirection().getIsBatteryDischarging().equals("0")) {
-            publishChannelIfLinked(chan_current_battery_power_discharge.getUID(),
-                    new QuantityType<>(0.0, Units.WATT_HOUR));
-            publishChannelIfLinked(chan_current_battery_power_charge.getUID(),
-                    new QuantityType<>(0.0, Units.WATT_HOUR));
+            publishChannelIfLinked(chan_current_battery_power_discharge.getUID(), new QuantityType<>(0.0, Units.WATT));
+            publishChannelIfLinked(chan_current_battery_power_charge.getUID(), new QuantityType<>(0.0, Units.WATT));
         }
 
         if (null != chan_current_battery_power_charge && null != chan_current_battery_power_discharge
                 && responseData.getStats().getDirection().getIsBatteryCharging().equals("1")) {
-            publishChannelIfLinked(chan_current_battery_power_discharge.getUID(),
-                    new QuantityType<>(0.0, Units.WATT_HOUR));
+            publishChannelIfLinked(chan_current_battery_power_discharge.getUID(), new QuantityType<>(0.0, Units.WATT));
             publishChannelIfLinked(chan_current_battery_power_charge.getUID(), new QuantityType<>(
-                    getNumericValueOfString(responseData.getCommon().getBATT().getDcPower()), Units.WATT_HOUR));
+                    getNumericValueOfString(responseData.getCommon().getBATT().getDcPower()), Units.WATT));
         }
 
         if (null != chan_current_battery_power_charge && null != chan_current_battery_power_discharge
                 && responseData.getStats().getDirection().getIsBatteryDischarging().equals("1")) {
 
             publishChannelIfLinked(chan_current_battery_power_discharge.getUID(), new QuantityType<>(
-                    getNumericValueOfString(responseData.getCommon().getBATT().getDcPower()), Units.WATT_HOUR));
+                    getNumericValueOfString(responseData.getCommon().getBATT().getDcPower()), Units.WATT));
 
-            publishChannelIfLinked(chan_current_battery_power_charge.getUID(),
-                    new QuantityType<>(0.0, Units.WATT_HOUR));
+            publishChannelIfLinked(chan_current_battery_power_charge.getUID(), new QuantityType<>(0.0, Units.WATT));
         }
 
         if (chan_isdirect != null) {

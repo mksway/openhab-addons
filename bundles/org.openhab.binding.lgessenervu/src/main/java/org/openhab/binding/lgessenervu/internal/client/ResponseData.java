@@ -29,7 +29,7 @@ public class ResponseData {
     private Common common;
     private Statistics stats;
     private DataSource datasrc;
-    private boolean success = true;;
+    private boolean success = true;
 
     public ResponseData() {
         common = new Common();

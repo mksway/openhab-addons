@@ -1,8 +1,10 @@
 # LGEssEnervu Binding
+
 This binding is meant to retrieve data of the LG Ess Powerrouter/Battery bundle.
 It is designed to retrieve data either from the lg cloud (https://enervu.lg-ess.com) or via WLAN directly from the local device.
 
 ## Supported Things
+
 The following thing types are supported:
 
 |Thing                |ID                         |Description                 |
@@ -18,6 +20,7 @@ device does not respond on the first try.
 
 
 ## Getting started
+
 ### Obtaining the password for accessing the device via local network.
 In order to get the device password you need to be within the wifi provided by the box.
 Once you are connected to the wifi of your device send a json request to
