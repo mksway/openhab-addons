@@ -178,7 +178,6 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
     }
 
     public void startPolling() {
-        logger.debug("start polling");
         monitor.lock();
         try {
             SnapshotJob sjob = new SnapshotJob(lgessClient);
@@ -195,7 +194,7 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
                 }
             }
         } catch (Exception ex) {
-            logger.error("{}", ex.getMessage(), ex);
+            logger.error("startpolling - refreshInterval {} with error {}", refreshInterval, ex.getMessage(), ex);
         } finally {
             monitor.unlock();
         }
@@ -302,7 +301,7 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
         try {
             returnval = (int) Double.parseDouble(input);
         } catch (Exception e) {
-            logger.error("{}", e.getMessage());
+            logger.error("getNumericValueOfString {}", e.getMessage(), e);
         }
 
         return returnval;
@@ -321,6 +320,7 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
         Channel chan_current_pwr_to_grid = getThing().getChannel(CHANNEL_CURRENT_POWER_TO_GRID);
         // pv
         Channel chan_current_pwr_from_pv = getThing().getChannel(CHANNEL_CURRENT_POWER_FROM_PV);
+        Channel chan_selfconsumption_pv = getThing().getChannel(CHANNEL_SELFCONSUMPTION_FROM_PV);
 
         // battery
         Channel chan_current_battery_soc = getThing().getChannel(CHANNEL_BATTERY_SOC);
@@ -367,6 +367,14 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
 
             publishChannelIfLinked(chan_current_pwr_from_pv.getUID(), new QuantityType<>(allstrings, Units.WATT));
         }
+
+        if (chan_selfconsumption_pv != null) {
+            publishChannelIfLinked(chan_selfconsumption_pv.getUID(),
+                    new QuantityType<>(
+                            getNumericValueOfString(responseData.getCommon().getPCS().getTodaySelfConsumption()),
+                            Units.PERCENT));
+        }
+
         if (chan_current_battery_soc != null) {
             publishChannelIfLinked(chan_current_battery_soc.getUID(), new QuantityType<>(
                     getNumericValueOfString(responseData.getCommon().getBATT().getSoc()), Units.PERCENT));
@@ -631,6 +639,7 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
     public void responseCallbackError(FailReason reason) {
         switch (reason) {
             case COMMUNICATION_ERROR:
+                stopPolling();
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
                         "Check network connection please.");
                 break;

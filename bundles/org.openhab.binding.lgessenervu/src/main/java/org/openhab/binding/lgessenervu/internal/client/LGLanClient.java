@@ -114,7 +114,7 @@ public class LGLanClient extends LGEssClient {
                 res = req.send();
                 response = res.getContentAsString();
             } catch (Exception e) {
-                logger.error("{}", e.getMessage());
+                logger.error("{}", e.getMessage(), e);
                 response = "";
             }
         }
@@ -135,12 +135,20 @@ public class LGLanClient extends LGEssClient {
         Common com = null;
         Statistics stats = null;
 
+        if (jsonresp_common.isBlank() || jsonresp_stats.isBlank()
+                || jsonresp_common.toLowerCase().contains("auth_key failed")
+                || jsonresp_stats.toLowerCase().contains("auth_key failed")) {
+            setLoginstatus(false, FailReason.PARSING_ERROR);
+            return;
+        }
+
         try {
             com = gson.fromJson(jsonresp_common, Common.class);
             stats = gson.fromJson(jsonresp_stats, Statistics.class);
         } catch (Exception e) {
-            logger.error("{}", e.getMessage());
-            // auth_key failed
+            logger.error("auth failed! {}", e.getMessage(), e);
+            setLoginstatus(false, FailReason.PARSING_ERROR);
+            return;
         }
 
         responseData.setDatasource(DataSource.LAN_API);

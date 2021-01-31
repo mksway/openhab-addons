@@ -70,6 +70,7 @@ public class LGEssEnervuBindingConstants {
     public static final String CHANNEL_CURRENT_POWER_FROM_PV = "currentPowerFromPV";
     public static final String CHANNEL_DAILY_POWER_FROM_PV = "dailyPowerFromPV";
     public static final String CHANNEL_MONTHLY_POWER_FROM_PV = "monthlyPowerFromPV";
+    public static final String CHANNEL_SELFCONSUMPTION_FROM_PV = "selfConsumption";
 
     // BATTERY
     public static final String CHANNEL_BATTERY_SOC = "batterySoc";

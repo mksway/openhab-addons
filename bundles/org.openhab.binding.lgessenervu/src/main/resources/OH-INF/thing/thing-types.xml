@@ -21,6 +21,8 @@
 			<channel id="currentPowerFromPV" typeId="current_power_provided_by_pv"/>
 			<channel id="dailyPowerFromPV" typeId="daily_power_provided_by_pv"/>
 			<channel id="monthlyPowerFromPV" typeId="monthly_power_provided_by_pv"/>
+			<channel id="selfConsumption" typeId="selfConsumption"/>
+
 			<!-- battery -->
 			<channel id="batterySoc" typeId="current_battery_soc"/>
 			<channel id="batteryStatus" typeId="current_battery_status"/>
@@ -188,6 +190,13 @@
 		<label>Production from PV (monthly)</label>
 		<description>Total monthly power production</description>
 		<state readOnly="true" pattern="%.1f kWh"></state>
+	</channel-type>
+
+	<channel-type id="selfConsumption">
+		<item-type>Number</item-type>
+		<label>Self consumption (daily)</label>
+		<description>Percentage of power produced by PV consumed on your own</description>
+		<state readOnly="true" pattern="%d %%"></state>
 	</channel-type>
 
 	<!-- battery -->
