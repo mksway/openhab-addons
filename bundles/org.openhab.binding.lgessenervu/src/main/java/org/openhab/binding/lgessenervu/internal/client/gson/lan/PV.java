@@ -32,12 +32,39 @@ public class PV {
     @SerializedName("capacity")
     @Expose
     private String capacity;
+
     @SerializedName("pv1_voltage")
     @Expose
     private String pv1Voltage;
     @SerializedName("pv2_voltage")
     @Expose
     private String pv2Voltage;
+    @SerializedName("pv3_voltage")
+    @Expose
+    private String pv3Voltage;
+    @SerializedName("pv4_voltage")
+    @Expose
+    private String pv4Voltage;
+    @SerializedName("pv5_voltage")
+    @Expose
+    private String pv5Voltage;
+
+    @SerializedName("pv1_current")
+    @Expose
+    private String pv1Current;
+    @SerializedName("pv2_current")
+    @Expose
+    private String pv2Current;
+    @SerializedName("pv3_current")
+    @Expose
+    private String pv3Current;
+    @SerializedName("pv4_current")
+    @Expose
+    private String pv4Current;
+    @SerializedName("pv5_current")
+    @Expose
+    private String pv5Current;
+
     @SerializedName("pv1_power")
     @Expose
     private String pv1Power;
@@ -57,12 +84,6 @@ public class PV {
     @Expose
     private String pv5Power;
 
-    @SerializedName("pv1_current")
-    @Expose
-    private String pv1Current;
-    @SerializedName("pv2_current")
-    @Expose
-    private String pv2Current;
     @SerializedName("today_pv_generation_sum")
     @Expose
     private String todayPvGenerationSum;
@@ -75,13 +96,22 @@ public class PV {
         this.capacity = "";
         this.pv1Voltage = "";
         this.pv2Voltage = "";
+        this.pv3Voltage = "";
+        this.pv4Voltage = "";
+        this.pv5Voltage = "";
+
+        this.pv1Current = "";
+        this.pv2Current = "";
+        this.pv3Current = "";
+        this.pv4Current = "";
+        this.pv5Current = "";
+
         this.pv1Power = "";
         this.pv2Power = "";
         this.pv3Power = "";
         this.pv4Power = "";
         this.pv5Power = "";
-        this.pv1Current = "";
-        this.pv2Current = "";
+
         this.todayPvGenerationSum = "";
         this.todayMonthPvGenerationSum = "";
     }
@@ -92,6 +122,9 @@ public class PV {
      * @param capacity
      * @param pv1Voltage
      * @param pv2Voltage
+     * @param pv3Voltage
+     * @param pv4Voltage
+     * @param pv5Voltage
      * @param pv1Power
      * @param pv2Power
      * @param pv3Power
@@ -99,23 +132,34 @@ public class PV {
      * @param pv5Power
      * @param pv1Current
      * @param pv2Current
+     * @param pv3Current
+     * @param pv4Current
+     * @param pv5Current
      * @param todayPvGenerationSum
      * @param todayMonthPvGenerationSum
      */
-    public PV(String brand, String capacity, String pv1Voltage, String pv2Voltage, String pv1Power, String pv2Power,
-            String pv3Power, String pv4Power, String pv5Power, String pv1Current, String pv2Current,
+    public PV(String brand, String capacity, String pv1Voltage, String pv2Voltage, String pv3Voltage, String pv4Voltage,
+            String pv5Voltage, String pv1Power, String pv2Power, String pv3Power, String pv4Power, String pv5Power,
+            String pv1Current, String pv2Current, String pv3Current, String pv4Current, String pv5Current,
             String todayPvGenerationSum, String todayMonthPvGenerationSum) {
         this.brand = brand;
         this.capacity = capacity;
         this.pv1Voltage = pv1Voltage;
         this.pv2Voltage = pv2Voltage;
+        this.pv3Voltage = pv3Voltage;
+        this.pv4Voltage = pv4Voltage;
+        this.pv5Voltage = pv5Voltage;
+        this.pv1Current = pv1Current;
+        this.pv2Current = pv2Current;
+        this.pv3Current = pv3Current;
+        this.pv4Current = pv4Current;
+        this.pv5Current = pv5Current;
+
         this.pv1Power = pv1Power;
         this.pv2Power = pv2Power;
         this.pv3Power = pv3Power;
         this.pv4Power = pv4Power;
         this.pv5Power = pv5Power;
-        this.pv1Current = pv1Current;
-        this.pv2Current = pv2Current;
         this.todayPvGenerationSum = todayPvGenerationSum;
         this.todayMonthPvGenerationSum = todayMonthPvGenerationSum;
     }
@@ -150,6 +194,30 @@ public class PV {
 
     public void setPv2Voltage(String pv2Voltage) {
         this.pv2Voltage = pv2Voltage;
+    }
+
+    public String getPv3Voltage() {
+        return pv3Voltage;
+    }
+
+    public void setPv3Voltage(String pv3Voltage) {
+        this.pv3Voltage = pv3Voltage;
+    }
+
+    public String getPv4Voltage() {
+        return pv4Voltage;
+    }
+
+    public void setPv4Voltage(String pv4Voltage) {
+        this.pv4Voltage = pv4Voltage;
+    }
+
+    public String getPv5Voltage() {
+        return pv5Voltage;
+    }
+
+    public void setPv5Voltage(String pv5Voltage) {
+        this.pv5Voltage = pv5Voltage;
     }
 
     public String getPv1Power() {
@@ -215,6 +283,30 @@ public class PV {
 
     public void setPv2Current(String pv2Current) {
         this.pv2Current = pv2Current;
+    }
+
+    public String getPv3Current() {
+        return pv3Current;
+    }
+
+    public void setPv3Current(String pv3Current) {
+        this.pv3Current = pv3Current;
+    }
+
+    public String getPv4Current() {
+        return pv4Current;
+    }
+
+    public void setPv4Current(String pv4Current) {
+        this.pv4Current = pv4Current;
+    }
+
+    public String getPv5Current() {
+        return pv5Current;
+    }
+
+    public void setPv5Current(String pv5Current) {
+        this.pv5Current = pv5Current;
     }
 
     public String getTodayPvGenerationSum() {

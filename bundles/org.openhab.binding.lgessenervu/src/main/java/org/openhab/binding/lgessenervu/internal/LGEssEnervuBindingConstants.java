@@ -72,6 +72,24 @@ public class LGEssEnervuBindingConstants {
     public static final String CHANNEL_MONTHLY_POWER_FROM_PV = "monthlyPowerFromPV";
     public static final String CHANNEL_SELFCONSUMPTION_FROM_PV = "selfConsumption";
 
+    public static final String CHANNEL_STRING1_VOLTAGE = "string1CurrentPotential";
+    public static final String CHANNEL_STRING2_VOLTAGE = "string2CurrentPotential";
+    public static final String CHANNEL_STRING3_VOLTAGE = "string3CurrentPotential";
+    public static final String CHANNEL_STRING4_VOLTAGE = "string4CurrentPotential";
+    public static final String CHANNEL_STRING5_VOLTAGE = "string5CurrentPotential";
+
+    public static final String CHANNEL_STRING1_CURRENT = "string1CurrentCurrent";
+    public static final String CHANNEL_STRING2_CURRENT = "string2CurrentCurrent";
+    public static final String CHANNEL_STRING3_CURRENT = "string3CurrentCurrent";
+    public static final String CHANNEL_STRING4_CURRENT = "string4CurrentCurrent";
+    public static final String CHANNEL_STRING5_CURRENT = "string5CurrentCurrent";
+
+    public static final String CHANNEL_STRING1_POWER = "string1CurrentPower";
+    public static final String CHANNEL_STRING2_POWER = "string2CurrentPower";
+    public static final String CHANNEL_STRING3_POWER = "string3CurrentPower";
+    public static final String CHANNEL_STRING4_POWER = "string4CurrentPower";
+    public static final String CHANNEL_STRING5_POWER = "string5CurrentPower";
+
     // BATTERY
     public static final String CHANNEL_BATTERY_SOC = "batterySoc";
     public static final String CHANNEL_BATTERY_STATUS = "batteryStatus";

@@ -2,6 +2,7 @@
 
 This binding is meant to retrieve data of the LG Ess Powerrouter/Battery bundle.
 It is designed to retrieve data either from the lg cloud (https://enervu.lg-ess.com) or via WLAN directly from the local device.
+Note that some data(e.g separate information for the strings) may not be retrieved from the lg cloud.
 
 ## Supported Things
 
@@ -49,10 +50,6 @@ Once you are connected to the wifi of your device send a json request to
 
 ## Channels
 
-_Here you should provide information about available channel types, what their meaning is and how they can be used._
-
-_Note that it is planned to generate some part of this based on the XML files within ```src/main/resources/OH-INF/thing``` of your binding._
-
 | channel  | type   | description                  |
 |----------|--------|------------------------------|
 | currentPowerFromGrid| Number:Power| Current power taken from grid  |
@@ -64,21 +61,37 @@ _Note that it is planned to generate some part of this based on the XML files wi
 | currentPowerFromPV| Number:Power| Current power produced by PV  |
 | dailyPowerFromPV| Number:Power| Daily power produced by PV  |
 | monthlyPowerFromPV| Number:Power| Monthly power produced by PV |
-| batterySoc| Number:Power| Current battery SOC state  |
+| batterySoc| Number| Current battery SOC state  |
 | batteryStatus| String | Current battery operating mode (idle, charging,discharging)  |
 | batteryWintermode| Switch| Status of wintermode  |
 | currentPowerChargingToBattery| Number:Power| Current power used to charge the battery  |
-| dailyBatteryCharge| Number:Power| Daily power used to charge the battery |
-| monthlyBatteryCharge| Number:Power| Monthly power used to charge the battery  |
+| dailyBatteryCharge| Number:Energy| Daily energy used to charge the battery |
+| monthlyBatteryCharge| Number:Energy| Monthly energy used to charge the battery  |
 | currentPowerDischargingFromBattery| Number:Power| Current power used to discharge the battery   |
-| dailyPowerDischargingFromBattery| Number:Power| Daily power used to discharge the battery  |
-| monthlyPowerDischargingFromBattery| Number:Power| Monthly power used to discharge the battery  |
+| dailyPowerDischargingFromBattery| Number:Energy| Daily energy used to discharge the battery  |
+| monthlyPowerDischargingFromBattery| Number:Energy| Monthly energy used to discharge the battery  |
 | currentTotalPowerConsumption| Number:Power| Current total power consumption (grid+battery+pv) |
-| dailyTotalPowerConsumption| Number:Power| Daily total power consumption (grid+battery+pv)  |
-| monthlyTotalPowerConsumption| Number:Power| Monthly total power consumption (grid+battery+pv)  |
+| dailyTotalPowerConsumption| Number:Energy| Daily total energy consumption (grid+battery+pv)  |
+| monthlyTotalPowerConsumption| Number:Energy| Monthly total energy consumption (grid+battery+pv)  |
 | currentDirectPowerConsumption| Number:Power| Current direct power consumption from PV  |
-| dailyDirectPowerConsumption| Number:Power| Daily direct power consumption from PV  |
-| monthlyDirectPowerConsumption| Number:Power| Monthly direct power consumption from PV  |
+| dailyDirectPowerConsumption| Number:Energy| Daily direct energy consumption from PV  |
+| monthlyDirectPowerConsumption| Number:Energy| Monthly direct energy consumption from PV  |
+| selfConsumption| Number| Percentage of self consumption for the current day |
+| string1CurrentPotential| Number:ElectricPotential | Current DC Voltage of string 1 (only for LAN mode)|
+| string2CurrentPotential| Number:ElectricPotential | Current DC Voltage of string 2 (only for LAN mode)|
+| string3CurrentPotential| Number:ElectricPotential | Current DC Voltage of string 3 (only for LAN mode)|
+| string4CurrentPotential| Number:ElectricPotential | Current DC Voltage of string 4 (only for LAN mode)|
+| string5CurrentPotential| Number:ElectricPotential | Current DC Voltage of string 5 (only for LAN mode)|
+| currentCurrentString1| Number:ElectricCurrent | Current DC Current of string 1 (only for LAN mode)|
+| currentCurrentString2| Number:ElectricCurrent | Current DC Current of string 2 (only for LAN mode)|
+| currentCurrentString3| Number:ElectricCurrent | Current DC Current of string 3 (only for LAN mode)|
+| currentCurrentString4| Number:ElectricCurrent | Current DC Current of string 4 (only for LAN mode)|
+| currentCurrentString5| Number:ElectricCurrent | Current DC Current of string 5 (only for LAN mode)|
+| currentPowerString1| Number:Power | Current DC power of string 1|
+| currentPowerString2| Number:Power | Current DC power of string 2|
+| currentPowerString3| Number:Power | Current DC power of string 3|
+| currentPowerString4| Number:Power | Current DC power of string 4|
+| currentPowerString5| Number:Power | Current DC power of string 5|
 | isDirectConsuming| Switch | Is PV power currently directly consumed?  |
 | isBatteryCharging| Switch | Is the battery currently charging?  |
 | isBatteryDischarging| Switch | Is the battery currently discharging?  |

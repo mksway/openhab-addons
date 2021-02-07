@@ -322,6 +322,24 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
         Channel chan_current_pwr_from_pv = getThing().getChannel(CHANNEL_CURRENT_POWER_FROM_PV);
         Channel chan_selfconsumption_pv = getThing().getChannel(CHANNEL_SELFCONSUMPTION_FROM_PV);
 
+        Channel chan_string1_voltage_pv = getThing().getChannel(CHANNEL_STRING1_VOLTAGE);
+        Channel chan_string2_voltage_pv = getThing().getChannel(CHANNEL_STRING2_VOLTAGE);
+        Channel chan_string3_voltage_pv = getThing().getChannel(CHANNEL_STRING3_VOLTAGE);
+        Channel chan_string4_voltage_pv = getThing().getChannel(CHANNEL_STRING4_VOLTAGE);
+        Channel chan_string5_voltage_pv = getThing().getChannel(CHANNEL_STRING5_VOLTAGE);
+
+        Channel chan_string1_current_pv = getThing().getChannel(CHANNEL_STRING1_CURRENT);
+        Channel chan_string2_current_pv = getThing().getChannel(CHANNEL_STRING2_CURRENT);
+        Channel chan_string3_current_pv = getThing().getChannel(CHANNEL_STRING3_CURRENT);
+        Channel chan_string4_current_pv = getThing().getChannel(CHANNEL_STRING4_CURRENT);
+        Channel chan_string5_current_pv = getThing().getChannel(CHANNEL_STRING5_CURRENT);
+
+        Channel chan_string1_power_pv = getThing().getChannel(CHANNEL_STRING1_POWER);
+        Channel chan_string2_power_pv = getThing().getChannel(CHANNEL_STRING2_POWER);
+        Channel chan_string3_power_pv = getThing().getChannel(CHANNEL_STRING3_POWER);
+        Channel chan_string4_power_pv = getThing().getChannel(CHANNEL_STRING4_POWER);
+        Channel chan_string5_power_pv = getThing().getChannel(CHANNEL_STRING5_POWER);
+
         // battery
         Channel chan_current_battery_soc = getThing().getChannel(CHANNEL_BATTERY_SOC);
         Channel chan_current_battery_status = getThing().getChannel(CHANNEL_BATTERY_STATUS);
@@ -357,6 +375,70 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
             }
 
         }
+
+        if (chan_string1_voltage_pv != null) {
+            publishChannelIfLinked(chan_string1_voltage_pv.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getPV().getPv1Voltage()), Units.VOLT));
+        }
+        if (chan_string2_voltage_pv != null) {
+            publishChannelIfLinked(chan_string2_voltage_pv.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getPV().getPv2Voltage()), Units.VOLT));
+        }
+        if (chan_string3_voltage_pv != null) {
+            publishChannelIfLinked(chan_string3_voltage_pv.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getPV().getPv3Voltage()), Units.VOLT));
+        }
+        if (chan_string4_voltage_pv != null) {
+            publishChannelIfLinked(chan_string4_voltage_pv.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getPV().getPv4Voltage()), Units.VOLT));
+        }
+        if (chan_string5_voltage_pv != null) {
+            publishChannelIfLinked(chan_string5_voltage_pv.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getPV().getPv5Voltage()), Units.VOLT));
+        }
+
+        if (chan_string1_current_pv != null) {
+            publishChannelIfLinked(chan_string1_current_pv.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getPV().getPv1Current()), Units.AMPERE));
+        }
+        if (chan_string2_current_pv != null) {
+            publishChannelIfLinked(chan_string2_current_pv.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getPV().getPv2Current()), Units.AMPERE));
+        }
+        if (chan_string3_current_pv != null) {
+            publishChannelIfLinked(chan_string3_current_pv.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getPV().getPv3Current()), Units.AMPERE));
+        }
+        if (chan_string4_current_pv != null) {
+            publishChannelIfLinked(chan_string4_current_pv.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getPV().getPv4Current()), Units.AMPERE));
+        }
+        if (chan_string5_current_pv != null) {
+            publishChannelIfLinked(chan_string5_current_pv.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getPV().getPv5Current()), Units.AMPERE));
+        }
+
+        if (chan_string1_power_pv != null) {
+            publishChannelIfLinked(chan_string1_power_pv.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getPV().getPv1Power()), Units.WATT));
+        }
+        if (chan_string2_power_pv != null) {
+            publishChannelIfLinked(chan_string2_power_pv.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getPV().getPv2Power()), Units.WATT));
+        }
+        if (chan_string3_power_pv != null) {
+            publishChannelIfLinked(chan_string3_power_pv.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getPV().getPv3Power()), Units.WATT));
+        }
+        if (chan_string4_power_pv != null) {
+            publishChannelIfLinked(chan_string4_power_pv.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getPV().getPv4Power()), Units.WATT));
+        }
+        if (chan_string5_power_pv != null) {
+            publishChannelIfLinked(chan_string5_power_pv.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getPV().getPv5Power()), Units.WATT));
+        }
+
         if (chan_current_pwr_from_pv != null) {
             // take all 5 strings into account
             int allstrings = getNumericValueOfString(responseData.getCommon().getPV().getPv1Power());

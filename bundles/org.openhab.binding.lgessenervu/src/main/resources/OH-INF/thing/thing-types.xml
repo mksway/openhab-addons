@@ -23,6 +23,25 @@
 			<channel id="monthlyPowerFromPV" typeId="monthly_power_provided_by_pv"/>
 			<channel id="selfConsumption" typeId="selfConsumption"/>
 
+			<channel id="string1CurrentPotential" typeId="currentPotentialString1"/>
+			<channel id="string2CurrentPotential" typeId="currentPotentialString2"/>
+			<channel id="string3CurrentPotential" typeId="currentPotentialString3"/>
+			<channel id="string4CurrentPotential" typeId="currentPotentialString4"/>
+			<channel id="string5CurrentPotential" typeId="currentPotentialString5"/>
+
+			<channel id="string1CurrentCurrent" typeId="currentCurrentString1"/>
+			<channel id="string2CurrentCurrent" typeId="currentCurrentString2"/>
+			<channel id="string3CurrentCurrent" typeId="currentCurrentString3"/>
+			<channel id="string4CurrentCurrent" typeId="currentCurrentString4"/>
+			<channel id="string5CurrentCurrent" typeId="currentCurrentString5"/>
+
+			<channel id="string1CurrentPower" typeId="currentPowerString1"/>
+			<channel id="string2CurrentPower" typeId="currentPowerString2"/>
+			<channel id="string3CurrentPower" typeId="currentPowerString3"/>
+			<channel id="string4CurrentPower" typeId="currentPowerString4"/>
+			<channel id="string5CurrentPower" typeId="currentPowerString5"/>
+
+
 			<!-- battery -->
 			<channel id="batterySoc" typeId="current_battery_soc"/>
 			<channel id="batteryStatus" typeId="current_battery_status"/>
@@ -140,16 +159,16 @@
 	</channel-type>
 
 	<channel-type id="daily_power_consumption_from_grid">
-		<item-type>Number:Power</item-type>
+		<item-type>Number:Energy</item-type>
 		<label>Consumption from grid (daily)</label>
-		<description>Total daily power consumption</description>
+		<description>Total daily energy consumption</description>
 		<state readOnly="true" pattern="%.1f kWh"></state>
 	</channel-type>
 
 	<channel-type id="monthly_power_consumption_from_grid">
-		<item-type>Number:Power</item-type>
+		<item-type>Number:Energy</item-type>
 		<label>Consumption from grid (monthly)</label>
-		<description>Total monthly power consumption</description>
+		<description>Total monthly energy consumption</description>
 		<state readOnly="true" pattern="%.1f kWh"></state>
 	</channel-type>
 
@@ -160,15 +179,15 @@
 		<state readOnly="true" pattern="%.1f kW"></state>
 	</channel-type>
 	<channel-type id="daily_power_provided_to_grid">
-		<item-type>Number:Power</item-type>
-		<label>Provided power to grid (daily)</label>
-		<description>Total daily power provided</description>
+		<item-type>Number:Energy</item-type>
+		<label>Provided energy to grid (daily)</label>
+		<description>Total daily energy provided</description>
 		<state readOnly="true" pattern="%.1f kWh"></state>
 	</channel-type>
 	<channel-type id="monthly_power_provided_to_grid">
-		<item-type>Number:Power</item-type>
-		<label>Provided power to grid (monthly)</label>
-		<description>Total monthly power provided</description>
+		<item-type>Number:Energy</item-type>
+		<label>Provided energy to grid (monthly)</label>
+		<description>Total monthly energy provided</description>
 		<state readOnly="true" pattern="%.1f kWh"></state>
 	</channel-type>
 
@@ -180,15 +199,15 @@
 		<state readOnly="true" pattern="%d W"></state>
 	</channel-type>
 	<channel-type id="daily_power_provided_by_pv">
-		<item-type>Number:Power</item-type>
+		<item-type>Number:Energy</item-type>
 		<label>Production from PV (daily)</label>
-		<description>Total daily power production</description>
+		<description>Total daily energy production</description>
 		<state readOnly="true" pattern="%.1f kWh"></state>
 	</channel-type>
 	<channel-type id="monthly_power_provided_by_pv">
-		<item-type>Number:Power</item-type>
+		<item-type>Number:Energy</item-type>
 		<label>Production from PV (monthly)</label>
-		<description>Total monthly power production</description>
+		<description>Total monthly energy production</description>
 		<state readOnly="true" pattern="%.1f kWh"></state>
 	</channel-type>
 
@@ -197,6 +216,99 @@
 		<label>Self consumption (daily)</label>
 		<description>Percentage of power produced by PV consumed on your own</description>
 		<state readOnly="true" pattern="%d %%"></state>
+	</channel-type>
+
+	<channel-type id="currentPotentialString1">
+		<item-type>Number:ElectricPotential</item-type>
+		<label>Current DC Voltage of String 1</label>
+		<description>Current electric potential at string 1 of pv</description>
+		<state readOnly="true" pattern="%d V"></state>
+	</channel-type>
+	<channel-type id="currentPotentialString2">
+		<item-type>Number:ElectricPotential</item-type>
+		<label>Current DC Voltage of String 2</label>
+		<description>Current electric potential at string 2 of pv</description>
+		<state readOnly="true" pattern="%d V"></state>
+	</channel-type>
+	<channel-type id="currentPotentialString3">
+		<item-type>Number:ElectricPotential</item-type>
+		<label>Current DC Voltage of String 3</label>
+		<description>Current electric potential at string 3 of pv</description>
+		<state readOnly="true" pattern="%d V"></state>
+	</channel-type>
+	<channel-type id="currentPotentialString4">
+		<item-type>Number:ElectricPotential</item-type>
+		<label>Current DC Voltage of String 4</label>
+		<description>Current electric potential at string 4 of pv</description>
+		<state readOnly="true" pattern="%d V"></state>
+	</channel-type>
+	<channel-type id="currentPotentialString5">
+		<item-type>Number:ElectricPotential</item-type>
+		<label>Current DC Voltage of String 5</label>
+		<description>Current electric potential at string 5 of pv</description>
+		<state readOnly="true" pattern="%d V"></state>
+	</channel-type>
+
+	<channel-type id="currentCurrentString1">
+		<item-type>Number:ElectricCurrent</item-type>
+		<label>Current DC Current of String 1</label>
+		<description>Current electric Current at string 1 of pv</description>
+		<state readOnly="true" pattern="%d A"></state>
+	</channel-type>
+	<channel-type id="currentCurrentString2">
+		<item-type>Number:ElectricCurrent</item-type>
+		<label>Current DC Current of String 2</label>
+		<description>Current electric Current at string 2 of pv</description>
+		<state readOnly="true" pattern="%d A"></state>
+	</channel-type>
+	<channel-type id="currentCurrentString3">
+		<item-type>Number:ElectricCurrent</item-type>
+		<label>Current DC Current of String 3</label>
+		<description>Current electric Current at string 3 of pv</description>
+		<state readOnly="true" pattern="%d A"></state>
+	</channel-type>
+	<channel-type id="currentCurrentString4">
+		<item-type>Number:ElectricCurrent</item-type>
+		<label>Current DC Current of String 4</label>
+		<description>Current electric Current at string 4 of pv</description>
+		<state readOnly="true" pattern="%d A"></state>
+	</channel-type>
+	<channel-type id="currentCurrentString5">
+		<item-type>Number:ElectricCurrent</item-type>
+		<label>Current DC Current of String 5</label>
+		<description>Current electric Current at string 5 of pv</description>
+		<state readOnly="true" pattern="%d A"></state>
+	</channel-type>
+
+	<channel-type id="currentPowerString1">
+		<item-type>Number:Power</item-type>
+		<label>Current DC Power of String 1</label>
+		<description>Current power at string 1 of pv</description>
+		<state readOnly="true" pattern="%d W"></state>
+	</channel-type>
+	<channel-type id="currentPowerString2">
+		<item-type>Number:Power</item-type>
+		<label>Current DC Power of String 2</label>
+		<description>Current power at string 2 of pv</description>
+		<state readOnly="true" pattern="%d W"></state>
+	</channel-type>
+	<channel-type id="currentPowerString3">
+		<item-type>Number:Power</item-type>
+		<label>Current DC Power of String 3</label>
+		<description>Current power at string 3 of pv</description>
+		<state readOnly="true" pattern="%d W"></state>
+	</channel-type>
+	<channel-type id="currentPowerString4">
+		<item-type>Number:Power</item-type>
+		<label>Current DC Power of String 4</label>
+		<description>Current power at string 4 of pv</description>
+		<state readOnly="true" pattern="%d W"></state>
+	</channel-type>
+	<channel-type id="currentPowerString5">
+		<item-type>Number:Power</item-type>
+		<label>Current DC Power of String 5</label>
+		<description>Current power at string 5 of pv</description>
+		<state readOnly="true" pattern="%d W"></state>
 	</channel-type>
 
 	<!-- battery -->
@@ -235,16 +347,16 @@
 	</channel-type>
 
 	<channel-type id="daily_charging_power_battery">
-		<item-type>Number:Power</item-type>
-		<label>Charging power battery (daily)</label>
-		<description>Daily charging power of battery </description>
+		<item-type>Number:Energy</item-type>
+		<label>Charging energy battery (daily)</label>
+		<description>Daily charging energy of battery </description>
 		<state readOnly="true" pattern="%.1f kWh"></state>
 	</channel-type>
 
 	<channel-type id="monthly_charging_power_battery">
-		<item-type>Number:Power</item-type>
-		<label>Charging power battery (monthly)</label>
-		<description>Monthly charging power of battery </description>
+		<item-type>Number:Energy</item-type>
+		<label>Charging energy battery (monthly)</label>
+		<description>Monthly charging energy of battery </description>
 		<state readOnly="true" pattern="%.1f kWh"></state>
 	</channel-type>
 
@@ -255,15 +367,15 @@
 		<state readOnly="true" pattern="%.1f kW"></state>
 	</channel-type>
 	<channel-type id="daily_discharging_power_battery">
-		<item-type>Number:Power</item-type>
-		<label>Discharging power from battery (daily)</label>
-		<description>Current power provided by battery </description>
+		<item-type>Number:Energy</item-type>
+		<label>Discharging energy from battery (daily)</label>
+		<description>Daily energy provided by battery </description>
 		<state readOnly="true" pattern="%.1f kWh"></state>
 	</channel-type>
 	<channel-type id="monthly_discharging_power_battery">
-		<item-type>Number:Power</item-type>
-		<label>Discharging power from battery (monthly)</label>
-		<description>Current power provided by battery </description>
+		<item-type>Number:Energy</item-type>
+		<label>Discharging energy from battery (monthly)</label>
+		<description>Monthly energy provided by battery </description>
 		<state readOnly="true" pattern="%.1f kWh"></state>
 	</channel-type>
 
@@ -275,13 +387,13 @@
 		<state readOnly="true" pattern="%.1f kW"></state>
 	</channel-type>
 	<channel-type id="daily_power_consumption_total">
-		<item-type>Number:Power</item-type>
+		<item-type>Number:Energy</item-type>
 		<label>Consumption total (daily)</label>
 		<description>Daily total consumption</description>
 		<state readOnly="true" pattern="%.1f kWh"></state>
 	</channel-type>
 	<channel-type id="monthly_power_consumption_total">
-		<item-type>Number:Power</item-type>
+		<item-type>Number:Energy</item-type>
 		<label>Consumption total (monthly)</label>
 		<description>Monthly total consumption</description>
 		<state readOnly="true" pattern="%.1f kWh"></state>
@@ -294,13 +406,13 @@
 		<state readOnly="true" pattern="%.1f kW"></state>
 	</channel-type>
 	<channel-type id="daily_power_consumption_direct">
-		<item-type>Number:Power</item-type>
+		<item-type>Number:Energy</item-type>
 		<label>Consumption directly from PV (daily)</label>
 		<description>Daily direct consumption from PV</description>
 		<state readOnly="true" pattern="%.1f kWh"></state>
 	</channel-type>
 	<channel-type id="monthly_power_consumption_direct">
-		<item-type>Number:Power</item-type>
+		<item-type>Number:Energy</item-type>
 		<label>Consumption directly from PV (monthly)</label>
 		<description>Monthly direct consumption from PV</description>
 		<state readOnly="true" pattern="%.1f kWh"></state>

@@ -265,6 +265,8 @@ public class LGCloudClient extends LGEssClient {
 
         ResponseData responseData = null;
 
+        // cloud client does not support separate string readings (voltage/current/power ) of string 1 to 5
+
         if (null != snapshotdata) {
 
             common.getPV().setPv1Power(String.valueOf(snapshotdata.getEssSnapshotList().get(0).getPvPower()));
