@@ -92,25 +92,25 @@ public class PV {
     private String todayMonthPvGenerationSum;
 
     public PV() {
-        this.brand = "";
-        this.capacity = "";
-        this.pv1Voltage = "";
-        this.pv2Voltage = "";
-        this.pv3Voltage = "";
-        this.pv4Voltage = "";
-        this.pv5Voltage = "";
+        this.brand = "0";
+        this.capacity = "0";
+        this.pv1Voltage = "0";
+        this.pv2Voltage = "0";
+        this.pv3Voltage = "0";
+        this.pv4Voltage = "0";
+        this.pv5Voltage = "0";
 
-        this.pv1Current = "";
-        this.pv2Current = "";
-        this.pv3Current = "";
-        this.pv4Current = "";
-        this.pv5Current = "";
+        this.pv1Current = "0";
+        this.pv2Current = "0";
+        this.pv3Current = "0";
+        this.pv4Current = "0";
+        this.pv5Current = "0";
 
-        this.pv1Power = "";
-        this.pv2Power = "";
-        this.pv3Power = "";
-        this.pv4Power = "";
-        this.pv5Power = "";
+        this.pv1Power = "0";
+        this.pv2Power = "0";
+        this.pv3Power = "0";
+        this.pv4Power = "0";
+        this.pv5Power = "0";
 
         this.todayPvGenerationSum = "";
         this.todayMonthPvGenerationSum = "";
