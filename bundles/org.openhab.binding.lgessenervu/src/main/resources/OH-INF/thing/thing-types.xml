@@ -44,6 +44,7 @@
 
 			<!-- battery -->
 			<channel id="batterySoc" typeId="current_battery_soc"/>
+			<channel id="batterySafetySoc" typeId="battery_safety_soc"/>
 			<channel id="batteryStatus" typeId="current_battery_status"/>
 			<channel id="batteryWintermode" typeId="current_battery_wintermode_status"/>
 			<channel id="currentPowerChargingToBattery" typeId="current_charging_power_battery"/>
@@ -52,6 +53,8 @@
 			<channel id="currentPowerDischargingFromBattery" typeId="current_discharging_power_battery"/>
 			<channel id="dailyPowerDischargingFromBattery" typeId="daily_discharging_power_battery"/>
 			<channel id="monthlyPowerDischargingFromBattery" typeId="monthly_discharging_power_battery"/>
+			
+			
 			<!-- load -->
 			<channel id="currentTotalPowerConsumption" typeId="current_power_consumption_total"/>
 			<channel id="dailyTotalPowerConsumption" typeId="daily_power_consumption_total"/>
@@ -316,8 +319,16 @@
 		<item-type>Number</item-type>
 		<label>Current SOC state</label>
 		<description>Current battery level in [%]</description>
-		<state readOnly="true" pattern="%d %%"></state>
+		<state readOnly="true" pattern="%.1f %%"></state>
 	</channel-type>
+	
+    <channel-type id="battery_safety_soc">
+        <item-type>Number</item-type>
+        <label>Safety SOC</label>
+        <description>Safety SOC of battery [%]</description>
+        <state readOnly="true" pattern="%d %%"></state>
+    </channel-type>	
+	
 
 	<channel-type id="current_battery_status"> <!-- status 0 = idle; 2 = discharge -->
 		<item-type>String</item-type>

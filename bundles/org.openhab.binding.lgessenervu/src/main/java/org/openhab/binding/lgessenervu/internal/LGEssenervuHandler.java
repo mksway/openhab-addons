@@ -295,6 +295,18 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
         }
     }
 
+    private double getDoubleValueOfString(String input) {
+        double returnval = 0;
+
+        try {
+            returnval = Double.parseDouble(input);
+        } catch (Exception e) {
+            logger.error("getDoubleValueOfString {}", e.getMessage(), e);
+        }
+
+        return returnval;
+    }
+
     private int getNumericValueOfString(String input) {
         int returnval = 0;
 
@@ -342,6 +354,7 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
 
         // battery
         Channel chan_current_battery_soc = getThing().getChannel(CHANNEL_BATTERY_SOC);
+        Channel chan_current_battery_safetysoc = getThing().getChannel(CHANNEL_BATTERY_SAFETYSOC);
         Channel chan_current_battery_status = getThing().getChannel(CHANNEL_BATTERY_STATUS);
         Channel chan_current_battery_wintermode = getThing().getChannel(CHANNEL_BATTERY_WINTERMODE);
 
@@ -459,8 +472,13 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
 
         if (chan_current_battery_soc != null) {
             publishChannelIfLinked(chan_current_battery_soc.getUID(), new QuantityType<>(
-                    getNumericValueOfString(responseData.getCommon().getBATT().getSoc()), Units.PERCENT));
+                    getDoubleValueOfString(responseData.getCommon().getBATT().getSoc()), Units.PERCENT));
         }
+        if (chan_current_battery_safetysoc != null) {
+            publishChannelIfLinked(chan_current_battery_safetysoc.getUID(), new QuantityType<>(
+                    getNumericValueOfString(responseData.getCommon().getBATT().getSaftySoc()), Units.PERCENT));
+        }
+
         if (chan_current_battery_status != null) {
             publishChannelIfLinked(chan_current_battery_status.getUID(),
                     responseData.getCommon().getBATT().getStatus());

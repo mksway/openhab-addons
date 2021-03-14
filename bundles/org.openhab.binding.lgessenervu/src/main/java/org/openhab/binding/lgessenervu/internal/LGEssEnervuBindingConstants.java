@@ -92,6 +92,8 @@ public class LGEssEnervuBindingConstants {
 
     // BATTERY
     public static final String CHANNEL_BATTERY_SOC = "batterySoc";
+    public static final String CHANNEL_BATTERY_SAFETYSOC = "battery_safety_soc";
+
     public static final String CHANNEL_BATTERY_STATUS = "batteryStatus";
     public static final String CHANNEL_BATTERY_WINTERMODE = "batteryWintermode";
 
