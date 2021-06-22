@@ -62,6 +62,7 @@ Once you are connected to the wifi of your device send a json request to
 | dailyPowerFromPV| Number:Power| Daily power produced by PV  |
 | monthlyPowerFromPV| Number:Power| Monthly power produced by PV |
 | batterySoc| Number| Current battery SOC state  |
+| batterySafetySoc| Number| Current battery SOC state  |
 | batteryStatus| String | Current battery operating mode (idle, charging,discharging)  |
 | batteryWintermode| Switch| Status of wintermode  |
 | currentPowerChargingToBattery| Number:Power| Current power used to charge the battery  |

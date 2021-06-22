@@ -375,10 +375,16 @@ public class LGEssenervuHandler extends BaseThingHandler implements IResponseCal
         Channel chan_ischargingfromgrid = getThing().getChannel(CHANNEL_ISCHARGINGFROMGRID);
 
         if (chan_current_pwr_from_grid != null) {
-            publishChannelIfLinked(chan_current_pwr_from_grid.getUID(), new QuantityType<>(
-                    getNumericValueOfString(responseData.getCommon().getGRID().getActivePower()), Units.WATT));
+
+            if (responseData.getStats().getDirection().getIsGridBuying().equals("1")) {
+                publishChannelIfLinked(chan_current_pwr_from_grid.getUID(), new QuantityType<>(
+                        getNumericValueOfString(responseData.getCommon().getGRID().getActivePower()), Units.WATT));
+            } else {
+                publishChannelIfLinked(chan_current_pwr_from_grid.getUID(), new QuantityType<>(0.0, Units.WATT));
+            }
 
         }
+
         if (chan_current_pwr_to_grid != null) {
             if (responseData.getStats().getDirection().getIsGridSelling().equals("1")) {
                 publishChannelIfLinked(chan_current_pwr_to_grid.getUID(), new QuantityType<>(
